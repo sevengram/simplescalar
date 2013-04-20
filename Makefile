@@ -324,8 +324,6 @@ config-pisa:
 	$(LN) target-pisa$(X)loader.c loader.c
 	$(LN) target-pisa$(X)symbol.c symbol.c
 	$(LN) target-pisa$(X)syscall.c syscall.c
-	-$(RMDIR) tests
-	$(LNDIR) tests-pisa tests
 
 config-pisabig:
 	-$(RM) config.h machine.h machine.c machine.def loader.c symbol.c syscall.c
@@ -336,8 +334,6 @@ config-pisabig:
 	$(LN) target-pisa$(X)loader.c loader.c
 	$(LN) target-pisa$(X)symbol.c symbol.c
 	$(LN) target-pisa$(X)syscall.c syscall.c
-	-$(RMDIR) tests
-	$(LNDIR) tests-pisa tests
 
 config-pisalit:
 	-$(RM) config.h machine.h machine.c machine.def loader.c symbol.c syscall.c
@@ -348,8 +344,6 @@ config-pisalit:
 	$(LN) target-pisa$(X)loader.c loader.c
 	$(LN) target-pisa$(X)symbol.c symbol.c
 	$(LN) target-pisa$(X)syscall.c syscall.c
-	-$(RMDIR) tests
-	$(LNDIR) tests-pisa tests
 
 config-alpha:
 	-$(RM) config.h machine.h machine.c machine.def loader.c symbol.c syscall.c
@@ -360,8 +354,6 @@ config-alpha:
 	$(LN) target-alpha$(X)loader.c loader.c
 	$(LN) target-alpha$(X)symbol.c symbol.c
 	$(LN) target-alpha$(X)syscall.c syscall.c
-	-$(RMDIR) tests
-	$(LNDIR) tests-alpha tests
 
 sysprobe$(EEXT):	sysprobe.c
 	$(CC) $(FFLAGS) -o sysprobe$(EEXT) sysprobe.c
@@ -456,8 +448,6 @@ clean:
 	-$(RM) *.o *.obj *.exe core *~ MAKE.log Makefile.bak sysprobe$(EEXT) $(PROGS)
 	#cd libcheetah $(CS) $(MAKE) "RM=$(RM)" "CS=$(CS)" clean $(CS) cd ..
 	cd libexo $(CS) $(MAKE) "RM=$(RM)" "CS=$(CS)" clean $(CS) cd ..
-	cd tests-alpha $(CS) $(MAKE) "RM=$(RM)" "CS=$(CS)" clean $(CS) cd ..
-	cd tests-pisa $(CS) $(MAKE) "RM=$(RM)" "CS=$(CS)" clean $(CS) cd ..
 
 unpure:
 	rm -f sim.pure *pure*.o sim.pure.pure_hardlink sim.pure.pure_linkinfo
