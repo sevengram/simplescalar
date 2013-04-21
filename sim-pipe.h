@@ -9,9 +9,7 @@ struct port_t{
     int srcB;      /* input 2 register number */
     int srcC;      /* input 3 register number */
     int dstE;      /* output 1 register number */
-    int dstF;      /* output 2 register number */
-    int dstM;      /* output 1 memory address */
-    int dstN;      /* output 2 memory address */
+    int dstM;      /* output 2 register number */
 } ;
 
 /*define buffer between fetch and decode stage*/
@@ -41,7 +39,7 @@ struct exmem_buf{
     struct port_t port;  /* operand */
     int valA;
     int valE;
-    int needJump;
+    int cond;   /* need jump */
 };
 
 /*define buffer between memory and writeback stage*/

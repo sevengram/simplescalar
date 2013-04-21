@@ -534,11 +534,15 @@ DEFINST(LHU,      0x26,
   {                 \
     word_t _result;             \
     enum md_fault_type _fault;            \
-                  \
     _result = READ_WORD(GPR(BS) + OFS, _fault);       \
     if (_fault != md_fault_none)          \
       DECLARE_FAULT(_fault);            \
     SET_GPR(RT, _result);           \
+  }
+#undef LW_IMPL_PIPE
+#define LW_IMPL_PIPE           \
+  {                 \
+    em.valE = de.valB + OFS;    \
   }
 DEFINST(LW,     0x28,
   "lw",       "t,o(b)",
@@ -789,11 +793,15 @@ DEFINST(SH,       0x32,
   {                 \
     word_t _src;              \
     enum md_fault_type _fault;            \
-                  \
     _src = (word_t)GPR(RT);           \
     WRITE_WORD(_src, GPR(BS) + OFS, _fault);        \
     if (_fault != md_fault_none)          \
       DECLARE_FAULT(_fault);            \
+  }
+#undef SW_IMPL_PIPE
+#define SW_IMPL_PIPE               \
+  {                 \
+    em.valE = de.valB + OFS;    \
   }
 DEFINST(SW,       0x34,
   "sw",       "t,o(b)",

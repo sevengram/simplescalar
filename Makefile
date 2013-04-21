@@ -277,7 +277,7 @@ CFLAGS = $(MFLAGS) $(FFLAGS) $(OFLAGS) $(BINUTILS_INC) $(BINUTILS_LIB)
 #
 # all the sources
 #
-SRCS =	main.c sim-fast.c sim-pipe.c sim-safe.c sim-cache.c sim-profile.c \
+SRCS =	main.c sim-fast.c sim-pipe.c sim-pipe-withstall.c sim-safe.c sim-cache.c sim-profile.c \
 	sim-eio.c sim-bpred.c sim-cheetah.c sim-outorder.c \
 	memory.c regs.c cache.c bpred.c ptrace.c eventq.c \
 	resource.c endian.c dlite.c symbol.c eval.c options.c range.c \
@@ -305,7 +305,7 @@ OBJS =	main.$(OEXT) syscall.$(OEXT) memory.$(OEXT) regs.$(OEXT) \
 #
 # programs to build
 #
-PROGS = sim-fast$(EEXT) sim-pipe$(EEXT) sim-safe$(EEXT) sim-eio$(EEXT) \
+PROGS = sim-fast$(EEXT) sim-pipe$(EEXT) sim-pipe-withstall$(EEXT) sim-safe$(EEXT) sim-eio$(EEXT) \
 	sim-bpred$(EEXT) sim-profile$(EEXT) \
 	sim-cache$(EEXT) sim-outorder$(EEXT) # sim-cheetah$(EEXT)
 
@@ -366,6 +366,9 @@ sim-fast$(EEXT):	sysprobe$(EEXT) sim-fast.$(OEXT) $(OBJS) libexo/libexo.$(LEXT)
 
 sim-pipe$(EEXT):	sysprobe$(EEXT) sim-pipe.$(OEXT) $(OBJS) libexo/libexo.$(LEXT)
 	$(CC) -o sim-pipe$(EEXT) $(CFLAGS) sim-pipe.$(OEXT) $(OBJS) libexo/libexo.$(LEXT) $(MLIBS)
+
+sim-pipe-withstall$(EEXT):	sysprobe$(EEXT) sim-pipe-withstall.$(OEXT) $(OBJS) libexo/libexo.$(LEXT)
+	$(CC) -o sim-pipe-withstall$(EEXT) $(CFLAGS) sim-pipe-withstall.$(OEXT) $(OBJS) libexo/libexo.$(LEXT) $(MLIBS)
 
 sim-safe$(EEXT):	sysprobe$(EEXT) sim-safe.$(OEXT) $(OBJS) libexo/libexo.$(LEXT)
 	$(CC) -o sim-safe$(EEXT) $(CFLAGS) sim-safe.$(OEXT) $(OBJS) libexo/libexo.$(LEXT) $(MLIBS)
@@ -467,6 +470,8 @@ sim-fast.$(OEXT): host.h misc.h machine.h machine.def regs.h memory.h
 sim-fast.$(OEXT): options.h stats.h eval.h loader.h syscall.h dlite.h sim.h
 sim-pipe.$(OEXT): host.h misc.h machine.h machine.def regs.h memory.h
 sim-pipe.$(OEXT): options.h stats.h eval.h loader.h syscall.h dlite.h sim.h
+sim-pipe-withstall.$(OEXT): host.h misc.h machine.h machine.def regs.h memory.h
+sim-pipe-withstall.$(OEXT): options.h stats.h eval.h loader.h syscall.h dlite.h sim.h
 sim-safe.$(OEXT): host.h misc.h machine.h machine.def regs.h memory.h
 sim-safe.$(OEXT): options.h stats.h eval.h loader.h syscall.h dlite.h sim.h
 sim-cache.$(OEXT): host.h misc.h machine.h machine.def regs.h memory.h
