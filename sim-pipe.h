@@ -1,15 +1,18 @@
+#ifndef SIM_PIPE_H
+#define SIM_PIPE_H
+
 #include "machine.h"
 
 /* define values related to operands, all possible combinations are included */
-typedef struct {
-    int in1;      /* input 1 register number */
-    int in2;      /* input 2 register number */
-    int in3;      /* input 3 register number */
-    int out1;     /* output 1 register number */
-    int out2;     /* output 2 register number */
-    /* TODO */
-} oprand_t;
-
+struct port_t{
+    int srcA;      /* input 1 register number */
+    int srcB;      /* input 2 register number */
+    int srcC;      /* input 3 register number */
+    int dstE;      /* output 1 register number */
+    int dstF;      /* output 2 register number */
+    int dstM;      /* output 1 memory address */
+    int dstN;      /* output 2 memory address */
+} ;
 
 /*define buffer between fetch and decode stage*/
 struct ifid_buf {
@@ -18,32 +21,38 @@ struct ifid_buf {
     md_addr_t NPC;    /* the next instruction to fetch */
 };
 
-
 /*define buffer between decode and execute stage*/
 struct idex_buf {
-    md_addr_t PC;
-    md_inst_t inst;   /* instruction in ID stage */ 
-    int opcode;     /* operation number */
-    oprand_t oprand;    /* operand */
-    int instFlags;
-    int latched;
-    /* TODO */
+    md_inst_t inst;   /* instruction in ID stage */
+    enum md_opcode opcode; /* operation number */
+    enum md_fu_class res;
+    int flags;
+    struct port_t port;  /* operand */
+    int valA;
+    int valB;
 };
 
 /*define buffer between execute and memory stage*/
 struct exmem_buf{
     md_inst_t inst;   /* instruction in EX stage */
+    enum md_opcode opcode; /* operation number */
+    enum md_fu_class res;
+    int flags;
+    struct port_t port;  /* operand */
+    int valA;
+    int valE;
     int needJump;
-    int aluOutput;
-    /* TODO */
 };
 
 /*define buffer between memory and writeback stage*/
 struct memwb_buf{
     md_inst_t inst;   /* instruction in MEM stage */
-    /* TODO */
+    enum md_fu_class res;
+    int flags;
+    struct port_t port;  /* operand */
+    int valM;
+    int valE;
 };
-    
 
 /*do fetch stage*/
 void do_if();
@@ -60,16 +69,17 @@ void do_mem();
 /*do write_back to register*/
 void do_wb();
 
-
 #define MD_FETCH_INSTI(INST, MEM, PC)         \
     { INST.a = MEM_READ_WORD(mem, (PC));      \
       INST.b = MEM_READ_WORD(mem, (PC) + sizeof(word_t)); }
 
-#define SET_OPCODE(OP, INST) ((OP) = ((INST).a & 0xff)) 
+#define SET_OPCODE(OP, INST) ((OP) = ((INST).a & 0xff))
 
-#define RSI(INST)   (INST.b >> 24& 0xff)    /* reg source #1 */
+#define RSI(INST)   (INST.b >> 24& 0xff)      /* reg source #1 */
 #define RTI(INST)   ((INST.b >> 16) & 0xff)   /* reg source #2 */
 #define RDI(INST)   ((INST.b >> 8) & 0xff)    /* reg dest */
 
-#define IMMI(INST)  ((int)((/* signed */short)(INST.b & 0xffff))) /*get immediate value*/
+#define IMMI(INST)  ((int)((short)(INST.b & 0xffff))) /* get immediate value */
 #define TARGI(INST) (INST.b & 0x3ffffff)    /*jump target*/
+
+#endif

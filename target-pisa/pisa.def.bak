@@ -4,20 +4,20 @@
 
 /* SimpleScalar(TM) Tool Suite
  * Copyright (C) 1994-2003 by Todd M. Austin, Ph.D. and SimpleScalar, LLC.
- * All Rights Reserved.
- *
+ * All Rights Reserved. 
+ * 
  * THIS IS A LEGAL DOCUMENT, BY USING SIMPLESCALAR,
  * YOU ARE AGREEING TO THESE TERMS AND CONDITIONS.
- *
+ * 
  * No portion of this work may be used by any commercial entity, or for any
  * commercial purpose, without the prior, written permission of SimpleScalar,
  * LLC (info@simplescalar.com). Nonprofit and noncommercial use is permitted
  * as described below.
- *
+ * 
  * 1. SimpleScalar is provided AS IS, with no warranty of any kind, express
  * or implied. The user of the program accepts full responsibility for the
  * application of the program and the use of any results.
- *
+ * 
  * 2. Nonprofit and noncommercial use is encouraged. SimpleScalar may be
  * downloaded, compiled, executed, copied, and modified solely for nonprofit,
  * educational, noncommercial research, and noncommercial scholarship
@@ -26,13 +26,13 @@
  * solely for nonprofit, educational, noncommercial research, and
  * noncommercial scholarship purposes provided that this notice in its
  * entirety accompanies all copies.
- *
+ * 
  * 3. ALL COMMERCIAL USE, AND ALL USE BY FOR PROFIT ENTITIES, IS EXPRESSLY
  * PROHIBITED WITHOUT A LICENSE FROM SIMPLESCALAR, LLC (info@simplescalar.com).
- *
+ * 
  * 4. No nonprofit user may place any restrictions on the use of this software,
  * including as modified by the user, by any other authorized user.
- *
+ * 
  * 5. Noncommercial and nonprofit users may distribute copies of SimpleScalar
  * in compiled or executable form as set forth in Section 2, provided that
  * either: (A) it is accompanied by the corresponding machine-readable source
@@ -42,11 +42,11 @@
  * must permit verbatim duplication by anyone, or (C) it is distributed by
  * someone who received only the executable form, and is accompanied by a
  * copy of the written offer of source code.
- *
+ * 
  * 6. SimpleScalar was developed by Todd M. Austin, Ph.D. The tool suite is
  * currently maintained by SimpleScalar LLC (info@simplescalar.com). US Mail:
  * 2395 Timbercrest Court, Ann Arbor, MI 48105.
- *
+ * 
  * Copyright (C) 1994-2003 by Todd M. Austin, Ph.D. and SimpleScalar, LLC.
  */
 
@@ -189,131 +189,10 @@
  *        TALIGN(T)    - check jump target T alignment
  */
 
-#define NOP_IMPL_PIPE
-#define JUMP_IMPL_PIPE
-#define JAL_IMPL_PIPE
-#define JR_IMPL_PIPE
-#define JALR_IMPL_PIPE
-#define BEQ_IMPL_PIPE
-#define BNE_IMPL_PIPE
-#define BLEZ_IMPL_PIPE
-#define BGTZ_IMPL_PIPE
-#define BLTZ_IMPL_PIPE
-#define BGEZ_IMPL_PIPE
-#define BC1F_IMPL_PIPE
-#define BC1T_IMPL_PIPE
-#define LB_IMPL_PIPE
-#define LBU_IMPL_PIPE
-#define LH_IMPL_PIPE
-#define LHU_IMPL_PIPE
-#define LW_IMPL_PIPE
-#define DLW_IMPL_PIPE
-#define L_S_IMPL_PIPE
-#define L_D_IMPL_PIPE
-#define SB_IMPL_PIPE
-#define SH_IMPL_PIPE
-#define SW_IMPL_PIPE
-#define DSW_IMPL_PIPE
-#define DSZ_IMPL_PIPE
-#define S_S_IMPL_PIPE
-#define S_D_IMPL_PIPE
-#define LB_RR_IMPL_PIPE
-#define LBU_RR_IMPL_PIPE
-#define LH_RR_IMPL_PIPE
-#define LHU_RR_IMPL_PIPE
-#define LW_RR_IMPL_PIPE
-#define DLW_RR_IMPL_PIPE
-#define L_S_RR_IMPL_PIPE
-#define L_D_RR_IMPL_PIPE
-#define SB_RR_IMPL_PIPE
-#define SH_RR_IMPL_PIPE
-#define SW_RR_IMPL_PIPE
-#define DSW_RR_IMPL_PIPE
-#define DSZ_RR_IMPL_PIPE
-#define S_S_RR_IMPL_PIPE
-#define S_D_RR_IMPL_PIPE
-#define L_S_RR_R2_IMPL_PIPE
-#define S_S_RR_R2_IMPL_PIPE
-#define LW_RR_R2_IMPL_PIPE
-#define SW_RR_R2_IMPL_PIPE
-#define ADD_IMPL_PIPE
-#define ADDI_IMPL_PIPE
-#define ADDU_IMPL_PIPE
-#define ADDIU_IMPL_PIPE
-#define SUB_IMPL_PIPE
-#define ADDOK_IMPL_PIPE
-#define BITCOUNT_IMPL_PIPE
-#define SUBU_IMPL_PIPE
-#define MULT_IMPL_PIPE
-#define MULTU_IMPL_PIPE
-#define DIV_IMPL_PIPE
-#define DIVU_IMPL_PIPE
-#define MFHI_IMPL_PIPE
-#define MTHI_IMPL_PIPE
-#define MFLO_IMPL_PIPE
-#define MTLO_IMPL_PIPE
-#define AND__IMPL_PIPE
-#define ANDI_IMPL_PIPE
-#define OR_IMPL_PIPE
-#define ORI_IMPL_PIPE
-#define XOR_IMPL_PIPE
-#define XORI_IMPL_PIPE
-#define NOR_IMPL_PIPE
-#define SLL_IMPL_PIPE
-#define SLLV_IMPL_PIPE
-#define SRL_IMPL_PIPE
-#define SRLV_IMPL_PIPE
-#define SRA_IMPL_PIPE
-#define SRAV_IMPL_PIPE
-#define SLT_IMPL_PIPE
-#define SLTI_IMPL_PIPE
-#define SLTU_IMPL_PIPE
-#define SLTIU_IMPL_PIPE
-#define FADD_S_IMPL_PIPE
-#define FADD_D_IMPL_PIPE
-#define FSUB_S_IMPL_PIPE
-#define FSUB_D_IMPL_PIPE
-#define FMUL_S_IMPL_PIPE
-#define FMUL_D_IMPL_PIPE
-#define FDIV_S_IMPL_PIPE
-#define FDIV_D_IMPL_PIPE
-#define FABS_S_IMPL_PIPE
-#define FABS_D_IMPL_PIPE
-#define FMOV_S_IMPL_PIPE
-#define FMOV_D_IMPL_PIPE
-#define FNEG_S_IMPL_PIPE
-#define FNEG_D_IMPL_PIPE
-#define CVT_S_D_IMPL_PIPE
-#define CVT_S_W_IMPL_PIPE
-#define CVT_D_S_IMPL_PIPE
-#define CVT_D_W_IMPL_PIPE
-#define CVT_W_S_IMPL_PIPE
-#define CVT_W_D_IMPL_PIPE
-#define C_EQ_S_IMPL_PIPE
-#define C_EQ_D_IMPL_PIPE
-#define C_LT_S_IMPL_PIPE
-#define C_LT_D_IMPL_PIPE
-#define C_LE_S_IMPL_PIPE
-#define C_LE_D_IMPL_PIPE
-#define FSQRT_S_IMPL_PIPE
-#define FSQRT_D_IMPL_PIPE
-#define SYSCALL_IMPL_PIPE
-#define BREAK_IMPL_PIPE
-#define LUI_IMPL_PIPE
-#define MFC1_IMPL_PIPE
-#define DMFC1_IMPL_PIPE
-#define CFC1_IMPL_PIPE
-#define MTC1_IMPL_PIPE
-#define DMTC1_IMPL_PIPE
-#define CTC1_IMPL_PIPE
-#define LWL_IMPL_PIPE
-#define LWR_IMPL_PIPE
-#define SWL_IMPL_PIPE
-#define SWR_IMPL_PIPE
-
 /* no operation */
 #define NOP_IMPL              \
   {                 \
+    /* nada... */             \
   }
 DEFINST(NOP,    0x00,
   "nop",    "",
@@ -354,7 +233,7 @@ DEFINST(JAL,      0x02,
     SET_NPC(GPR(RS));             \
   }
 DEFINST(JR,       0x03,
-  "jr",       "s",
+  "jr",       "s", 
   NA,       F_CTRL|F_UNCOND|F_INDIRJMP,
   DNA, DNA,   DGPR(RS), DNA, DNA)
 
@@ -423,7 +302,7 @@ DEFINST(BGTZ,     0x08,
       SET_NPC(CPC + 8 + (OFS << 2));          \
   }
 DEFINST(BLTZ,     0x09,
-  "bltz",     "s,j",
+  "bltz",     "s,j", 
   IntALU,     F_CTRL|F_COND|F_DIRJMP,
   DNA, DNA,   DGPR(RS), DNA, DNA)
 
@@ -434,7 +313,7 @@ DEFINST(BLTZ,     0x09,
       SET_NPC(CPC + 8 + (OFS << 2));          \
   }
 DEFINST(BGEZ,       0x0a,
-  "bgez",     "s,j",
+  "bgez",     "s,j", 
   IntALU,     F_CTRL|F_COND|F_DIRJMP,
   DNA, DNA,   DGPR(RS), DNA, DNA)
 
@@ -445,7 +324,7 @@ DEFINST(BGEZ,       0x0a,
       SET_NPC(CPC + 8 + (OFS << 2));          \
   }
 DEFINST(BC1F,       0x0b,
-  "bc1f",     "j",
+  "bc1f",     "j", 
   IntALU,     F_CTRL|F_COND|F_DIRJMP|F_FPCOND,
   DNA, DNA,   DFCC, DNA, DNA)
 
@@ -456,7 +335,7 @@ DEFINST(BC1F,       0x0b,
       SET_NPC(CPC + 8 + (OFS << 2));          \
   }
 DEFINST(BC1T,       0x0c,
-  "bc1t",     "j",
+  "bc1t",     "j", 
   IntALU,     F_CTRL|F_COND|F_DIRJMP|F_FPCOND,
   DNA, DNA,   DFCC, DNA, DNA)
 
@@ -495,7 +374,7 @@ DEFINST(LB,     0x20,
       DECLARE_FAULT(_fault);            \
     SET_GPR(RT, (word_t)_result);         \
   }
-DEFINST(LBU,      0x22,
+DEFINST(LBU,      0x22, 
   "lbu",      "t,o(b)",
   RdPort,     F_MEM|F_LOAD|F_DISP,
   DGPR(RT), DNA,    DNA, DGPR(BS), DNA)
@@ -525,7 +404,7 @@ DEFINST(LH,       0x24,
       DECLARE_FAULT(_fault);            \
     SET_GPR(RT, (word_t)_result);         \
   }
-DEFINST(LHU,      0x26,
+DEFINST(LHU,      0x26, 
   "lhu",      "t,o(b)",
   RdPort,     F_MEM|F_LOAD|F_DISP,
   DGPR(RT), DNA,    DNA, DGPR(BS), DNA)
@@ -692,7 +571,7 @@ DEFINST(LWR,      0x2d,
         RdPort,     F_MEM|F_LOAD|F_DISP,
         DGPR(RT), DNA,    DNA, DGPR(BS), DNA)
 #endif
-
+  
 #if 0
 #define LWL_IMPL              \
   {                 \
@@ -720,7 +599,7 @@ DEFINST(LWL,      0x2c,
   DGPR(RT), DNA,    DNA, DGPR(BS), DNA,
   (ss_lr_temp = READ_WORD(WL_BASE(GPR(BS) + OFS)),
    SET_GPR(RT, ((GPR(RT) & WL_PROT_MASK1(GPR(BS) + OFS)) |
-          ((ss_lr_temp << (8 * WL_SIZE(GPR(BS) + OFS)))
+          ((ss_lr_temp << (8 * WL_SIZE(GPR(BS) + OFS))) 
            & ~WL_PROT_MASK1(GPR(BS) + OFS))))))
 #endif
 
@@ -751,7 +630,7 @@ DEFINST(LWR,      0x2d,
   DGPR(RT), DNA,    DNA, DGPR(BS), DNA,
   (ss_lr_temp = READ_WORD(WR_BASE(GPR(BS) + OFS)),
    SET_GPR(RT, ((GPR(RT) & ~WR_PROT_MASK1(GPR(BS) + OFS)) |
-          ((ss_lr_temp >> (8 * (4 - WR_SIZE(GPR(BS) + OFS))))
+          ((ss_lr_temp >> (8 * (4 - WR_SIZE(GPR(BS) + OFS)))) 
            & WR_PROT_MASK1(GPR(BS) + OFS))))))
 #endif
 
@@ -765,7 +644,7 @@ DEFINST(LWR,      0x2d,
     if (_fault != md_fault_none)          \
       DECLARE_FAULT(_fault);            \
   }
-DEFINST(SB,       0x30,
+DEFINST(SB,       0x30, 
   "sb",       "t,o(b)",
   WrPort,     F_MEM|F_STORE|F_DISP,
   DNA, DNA,   DGPR(RT), DGPR(BS), DNA)
@@ -780,7 +659,7 @@ DEFINST(SB,       0x30,
     if (_fault != md_fault_none)          \
       DECLARE_FAULT(_fault);            \
   }
-DEFINST(SH,       0x32,
+DEFINST(SH,       0x32, 
   "sh",       "t,o(b)",
   WrPort,     F_MEM|F_STORE|F_DISP,
   DNA, DNA,   DGPR(RT), DGPR(BS), DNA)
@@ -795,7 +674,7 @@ DEFINST(SH,       0x32,
     if (_fault != md_fault_none)          \
       DECLARE_FAULT(_fault);            \
   }
-DEFINST(SW,       0x34,
+DEFINST(SW,       0x34, 
   "sw",       "t,o(b)",
   WrPort,     F_MEM|F_STORE|F_DISP,
   DNA, DNA,   DGPR(RT), DGPR(BS), DNA)
@@ -845,7 +724,7 @@ DEFINST(DSZ,      0x38,
     if (_fault != md_fault_none)          \
       DECLARE_FAULT(_fault);            \
   }
-DEFINST(S_S,      0x36,
+DEFINST(S_S,      0x36, 
   "s.s",      "T,o(b)",
   WrPort,     F_MEM|F_STORE|F_DISP,
   DNA, DNA,   DFPR_L(FT), DGPR(BS), DNA)
@@ -982,7 +861,7 @@ DEFINST(SWL,      0x39,
   WrPort,     F_MEM|F_STORE|F_DISP,
   DNA, DNA,   DGPR(RT), DGPR(BS), DNA,
   (ss_lr_temp = READ_WORD(WL_BASE(GPR(BS) + OFS)),
-   ss_lr_temp = (((GPR(RT) >> (8 * WL_SIZE(GPR(BS) + OFS)))
+   ss_lr_temp = (((GPR(RT) >> (8 * WL_SIZE(GPR(BS) + OFS))) 
       & WL_PROT_MASK2(GPR(BS) + OFS)) |
            (ss_lr_temp & ~WL_PROT_MASK2(GPR(BS) + OFS))),
    WRITE_WORD(ss_lr_temp, WL_BASE(GPR(BS) + OFS))))
@@ -1014,7 +893,7 @@ DEFINST(SWR,      0x3a,
   WrPort,     F_MEM|F_STORE|F_DISP,
   DNA, DNA,   DGPR(RT), DGPR(BS), DNA,
   (ss_lr_temp = READ_WORD(WR_BASE(GPR(BS)+OFS)),
-   ss_lr_temp = (((GPR(RT) << (8 * (4 - WR_SIZE(GPR(BS) + OFS))))
+   ss_lr_temp = (((GPR(RT) << (8 * (4 - WR_SIZE(GPR(BS) + OFS)))) 
       & ~WR_PROT_MASK2(GPR(BS)+OFS)) |
            (ss_lr_temp & WR_PROT_MASK2(GPR(BS)+OFS))),
    WRITE_WORD(ss_lr_temp, WR_BASE(GPR(BS)+OFS))))
@@ -1049,7 +928,7 @@ DEFINST(LB_RR,      0xc0,
                   \
     SET_GPR(RT, (word_t)_result);         \
   }
-DEFINST(LBU_RR,     0xc1,
+DEFINST(LBU_RR,     0xc1, 
   "lbu",      "t,(b+d)",
   RdPort,     F_MEM|F_LOAD|F_RR,
   DGPR(RT), DNA,    DNA, DGPR(BS), DGPR(RD))
@@ -1081,7 +960,7 @@ DEFINST(LH_RR,      0xc2,
                   \
     SET_GPR(RT, (word_t)_result);         \
   }
-DEFINST(LHU_RR,     0xc3,
+DEFINST(LHU_RR,     0xc3, 
   "lhu",      "t,(b+d)",
   RdPort,     F_MEM|F_LOAD|F_RR,
   DGPR(RT), DNA,    DNA, DGPR(BS), DGPR(RD))
@@ -1174,8 +1053,8 @@ DEFINST(L_D_RR,     0xcf,
     if (_fault != md_fault_none)          \
       DECLARE_FAULT(_fault);            \
   }
-DEFINST(SB_RR,      0xc6,
-  "sb",       "t,(b+d)",
+DEFINST(SB_RR,      0xc6, 
+  "sb",       "t,(b+d)", 
   WrPort,     F_MEM|F_STORE|F_RR,
   DNA, DNA,   DGPR(RT), DGPR(BS), DGPR(RD))
 
@@ -1189,8 +1068,8 @@ DEFINST(SB_RR,      0xc6,
     if (_fault != md_fault_none)          \
       DECLARE_FAULT(_fault);            \
   }
-DEFINST(SH_RR,      0xc7,
-  "sh",       "t,(b+d)",
+DEFINST(SH_RR,      0xc7, 
+  "sh",       "t,(b+d)", 
   WrPort,     F_MEM|F_STORE|F_RR,
   DNA, DNA,   DGPR(RT), DGPR(BS), DGPR(RD))
 
@@ -1204,8 +1083,8 @@ DEFINST(SH_RR,      0xc7,
     if (_fault != md_fault_none)          \
       DECLARE_FAULT(_fault);            \
   }
-DEFINST(SW_RR,      0xc8,
-  "sw",       "t,(b+d)",
+DEFINST(SW_RR,      0xc8, 
+  "sw",       "t,(b+d)", 
   WrPort,     F_MEM|F_STORE|F_RR,
   DNA, DNA,   DGPR(RT), DGPR(BS), DGPR(RD))
 
@@ -1254,8 +1133,8 @@ DEFINST(DSZ_RR,     0xd1,
     if (_fault != md_fault_none)          \
       DECLARE_FAULT(_fault);            \
   }
-DEFINST(S_S_RR,     0xc9,
-  "s.s",      "T,(b+d)",
+DEFINST(S_S_RR,     0xc9, 
+  "s.s",      "T,(b+d)", 
   WrPort,     F_MEM|F_STORE|F_RR,
   DNA, DNA,   DFPR_L(FT), DGPR(BS), DGPR(RD))
 
@@ -1309,7 +1188,7 @@ DEFINST(L_S_RR_R2,    0xca,
       DECLARE_FAULT(_fault);            \
   }
 DEFINST(S_S_RR_R2,    0xcb,
-  "s.s.r2",     "T,(b+d)",
+  "s.s.r2",     "T,(b+d)", 
   WrPort,     F_MEM|F_STORE|F_RR,
   DNA, DNA,   DFPR_L(FT), DGPR(BS), DGPR(RD))
 
@@ -1339,7 +1218,7 @@ DEFINST(LW_RR_R2,   0xcc,
     if (_fault != md_fault_none)          \
       DECLARE_FAULT(_fault);            \
   }
-DEFINST(SW_RR_R2,   0xcd,
+DEFINST(SW_RR_R2,   0xcd, 
   "sw.r2",    "t,(b+d)",
   WrPort,     F_MEM|F_STORE|F_RR,
   DNA, DNA,   DGPR(RT), DGPR(BS), DGPR(RD))
@@ -1353,14 +1232,8 @@ DEFINST(SW_RR_R2,   0xcd,
   {                 \
     if (OVER(GPR(RS), GPR(RT)))           \
       DECLARE_FAULT(md_fault_overflow);         \
+                  \
     SET_GPR(RD, GPR(RS) + GPR(RT));         \
-  }
-#undef ADD_IMPL_PIPE
-#define ADD_IMPL_PIPE             \
-  {                 \
-    if (OVER(de.valA, de.valB))           \
-      DECLARE_FAULT(md_fault_overflow);         \
-    em.valE = de.valA + de.valB;  \
   }
 DEFINST(ADD,      0x40,
   "add",      "d,s,t",
@@ -1374,13 +1247,6 @@ DEFINST(ADD,      0x40,
                   \
     SET_GPR(RT, GPR(RS) + IMM);           \
   }
-#undef ADDI_IMPL_PIPE
-#define ADDI_IMPL_PIPE             \
-  {                 \
-    if (OVER(de.valA, IMM))           \
-      DECLARE_FAULT(md_fault_overflow);         \
-    em.valE = de.valA + IMM;  \
-  }
 DEFINST(ADDI,     0x41,
   "addi",     "t,s,i",
   IntALU,     F_ICOMP|F_IMM,
@@ -1390,11 +1256,6 @@ DEFINST(ADDI,     0x41,
   {                 \
     SET_GPR(RD, GPR(RS) + GPR(RT));         \
   }
-#undef ADDU_IMPL_PIPE
-#define ADDU_IMPL_PIPE             \
-  {                 \
-    em.valE = de.valA + de.valB;  \
-  }
 DEFINST(ADDU,       0x42,
   "addu",     "d,s,t",
   IntALU,     F_ICOMP,
@@ -1403,11 +1264,6 @@ DEFINST(ADDU,       0x42,
 #define ADDIU_IMPL              \
   {                 \
     SET_GPR(RT, GPR(RS) + IMM);           \
-  }
-#undef ADDIU_IMPL_PIPE
-#define ADDIU_IMPL_PIPE             \
-  {                 \
-    em.valE = de.valA + IMM;  \
   }
 DEFINST(ADDIU,      0x43,
   "addiu",    "t,s,i",
@@ -1518,7 +1374,7 @@ DEFINST(SUBU,       0x45,
       }                 \
   }
 DEFINST(MULT,       0x46,
-  "mult",     "s,t",
+  "mult",     "s,t", 
   IntMULT,    F_ICOMP|F_LONGLAT,
   DHI, DLO,   DGPR(RT), DGPR(RS), DNA)
 
@@ -1548,7 +1404,7 @@ DEFINST(MULT,       0x46,
       }                 \
   }
 DEFINST(MULTU,      0x47,
-  "multu",    "s,t",
+  "multu",    "s,t", 
   IntMULT,    F_ICOMP|F_LONGLAT,
   DHI, DLO,   DGPR(RT), DGPR(RS), DNA)
 
@@ -1561,7 +1417,7 @@ DEFINST(MULTU,      0x47,
     SET_HI(GPR(RS) % GPR(RT));            \
   }
 DEFINST(DIV,      0x48,
-  "div",      "s,t",
+  "div",      "s,t", 
   IntDIV,     F_ICOMP|F_LONGLAT,
   DHI, DLO,   DGPR(RT), DGPR(RS), DNA)
 
@@ -1574,7 +1430,7 @@ DEFINST(DIV,      0x48,
     SET_HI(((unsigned)GPR(RS)) % ((unsigned)GPR(RT)));      \
   }
 DEFINST(DIVU,       0x49,
-  "divu",     "s,t",
+  "divu",     "s,t", 
   IntDIV,     F_ICOMP|F_LONGLAT,
   DHI, DLO,   DGPR(RT), DGPR(RS), DNA)
 
@@ -1601,7 +1457,7 @@ DEFINST(MTHI,       0x4b,
     SET_GPR(RD, LO);              \
   }
 DEFINST(MFLO,       0x4c,
-  "mflo",     "d",
+  "mflo",     "d", 
   IntALU,     F_ICOMP,
   DGPR(RD), DNA,    DLO, DNA, DNA)
 
@@ -1610,7 +1466,7 @@ DEFINST(MFLO,       0x4c,
     SET_LO(GPR(RS));              \
   }
 DEFINST(MTLO,       0x4d,
-  "mtlo",     "s",
+  "mtlo",     "s", 
   IntALU,     F_ICOMP,
   DLO, DNA,   DGPR(RS), DNA, DNA)
 
@@ -1618,11 +1474,6 @@ DEFINST(MTLO,       0x4d,
 #define AND__IMPL             \
   {                 \
     SET_GPR(RD, GPR(RS) & GPR(RT));         \
-  }
-#undef AND__IMPL_PIPE
-#define AND__IMPL_PIPE             \
-  {                 \
-    em.valE = de.valA & de.valB;  \
   }
 DEFINST(AND_,       0x4e,
   "and",      "d,s,t",
@@ -1632,11 +1483,6 @@ DEFINST(AND_,       0x4e,
 #define ANDI_IMPL             \
   {                 \
     SET_GPR(RT, GPR(RS) & UIMM);          \
-  }
-#undef ANDI_IMPL_PIPE
-#define ANDI_IMPL_PIPE             \
-  {                 \
-    em.valE = de.valA & UIMM;  \
   }
 DEFINST(ANDI,     0x4f,
   "andi",     "t,s,u",
@@ -1692,13 +1538,8 @@ DEFINST(NOR,      0x54,
   {                 \
     SET_GPR(RD, GPR(RT) << SHAMT);          \
   }
-#undef SLL_IMPL_PIPE
-#define SLL_IMPL_PIPE              \
-  {                 \
-    em.valE = de.valA << SHAMT; \
-  }
 DEFINST(SLL,      0x55,
-  "sll",      "d,t,H",
+  "sll",      "d,t,H", 
   IntALU,     F_ICOMP,
   DGPR(RD), DNA,    DGPR(RT), DNA, DNA)
 
@@ -1707,7 +1548,7 @@ DEFINST(SLL,      0x55,
     SET_GPR(RD, GPR(RT) << (GPR(RS) & 037));        \
   }
 DEFINST(SLLV,       0x56,
-  "sllv",     "d,t,s",
+  "sllv",     "d,t,s", 
   IntALU,     F_ICOMP,
   DGPR(RD), DNA,    DGPR(RT), DGPR(RS), DNA)
 
@@ -1735,7 +1576,7 @@ DEFINST(SLLV,       0x56,
   }
 #endif /* FAST_SRL */
 DEFINST(SRL,      0x57,
-  "srl",      "d,t,H",
+  "srl",      "d,t,H", 
   IntALU,     F_ICOMP,
   DGPR(RD), DNA,    DGPR(RT), DNA, DNA)
 
@@ -1765,7 +1606,7 @@ DEFINST(SRL,      0x57,
   }
 #endif /* FAST_SRL */
 DEFINST(SRLV,       0x58,
-  "srlv",     "d,t,s",
+  "srlv",     "d,t,s", 
   IntALU,     F_ICOMP,
   DGPR(RD), DNA,    DGPR(RT), DGPR(RS), DNA)
 
@@ -1797,7 +1638,7 @@ DEFINST(SRLV,       0x58,
   }
 #endif /* FAST_SRA */
 DEFINST(SRA,      0x59,
-  "sra",      "d,t,H",
+  "sra",      "d,t,H", 
   IntALU,     F_ICOMP,
   DGPR(RD), DNA,    DGPR(RT), DNA, DNA)
 
@@ -1841,11 +1682,6 @@ DEFINST(SRAV,       0x5a,
     else                \
       SET_GPR(RD, 0);             \
   }
-#undef SLT_IMPL_PIPE
-#define SLT_IMPL_PIPE              \
-  {                 \
-    em.valE = (de.valA < de.valB); \
-  }
 DEFINST(SLT,      0x5b,
   "slt",      "d,s,t",
   IntALU,     F_ICOMP,
@@ -1857,11 +1693,6 @@ DEFINST(SLT,      0x5b,
       SET_GPR(RT, 1);             \
     else                \
       SET_GPR(RT, 0);             \
-  }
-#undef SLTI_IMPL_PIPE
-#define SLTI_IMPL_PIPE              \
-  {                 \
-    em.valE = (de.valA < IMM); \
   }
 DEFINST(SLTI,       0x5c,
   "slti",     "t,s,i",
@@ -1875,11 +1706,6 @@ DEFINST(SLTI,       0x5c,
     else                \
       SET_GPR(RD, 0);             \
   }
-#undef SLTU_IMPL_PIPE
-#define SLTU_IMPL_PIPE              \
-  {                 \
-    em.valE = (((unsigned)de.valA) < ((unsigned)de.valB)); \
-  }
 DEFINST(SLTU,       0x5d,
   "sltu",     "d,s,t",
   IntALU,     F_ICOMP,
@@ -1891,11 +1717,6 @@ DEFINST(SLTU,       0x5d,
       SET_GPR(RT, 1);             \
     else                \
       SET_GPR(RT, 0);             \
-  }
-#undef SLTIU_IMPL_PIPE
-#define SLTIU_IMPL_PIPE              \
-  {                 \
-    em.valE = (((unsigned)de.valA) < ((unsigned)IMM)); \
   }
 DEFINST(SLTIU,      0x5e,
   "sltiu",    "t,s,i",
@@ -2082,7 +1903,7 @@ DEFINST(FNEG_D,     0x7d,
                   \
     SET_FPR_F(FD, (float)FPR_D(FS));          \
   }
-DEFINST(CVT_S_D,    0x80,
+DEFINST(CVT_S_D,    0x80, 
   "cvt.s.d",    "D,S",
   FloatCVT,   F_FCOMP,
   DFPR_F(FD), DNA,  DFPR_D(FS), DNA, DNA)
@@ -2274,11 +2095,6 @@ DEFINST(BREAK,      0xa1,
   {                 \
     SET_GPR(RT, UIMM << 16);            \
   }
-#undef LUI_IMPL_PIPE
-#define LUI_IMPL_PIPE              \
-  {                 \
-    em.valE = UIMM << 16;   \
-  }
 DEFINST(LUI,      0xa2,
   "lui",      "t,U",
   IntALU,     F_ICOMP,
@@ -2345,6 +2161,7 @@ DEFINST(CTC1,       0xa6,
   "ctc1",     "t,S",
   IntALU,     F_ICOMP,
   DNA, DNA,   DNA, DNA, DNA)
+
 
 /* clean up all definitions... */
 #undef NOP_IMPL
@@ -2464,132 +2281,6 @@ DEFINST(CTC1,       0xa6,
 #undef MTC1_IMPL
 #undef DMTC1_IMPL
 #undef CTC1_IMPL
-#undef LWL_IMPL
-#undef LWR_IMPL
-#undef SWL_IMPL
-#undef SWR_IMPL
-
-#undef NOP_IMPL_PIPE
-#undef JUMP_IMPL_PIPE
-#undef JAL_IMPL_PIPE
-#undef JR_IMPL_PIPE
-#undef JALR_IMPL_PIPE
-#undef BEQ_IMPL_PIPE
-#undef BNE_IMPL_PIPE
-#undef BLEZ_IMPL_PIPE
-#undef BGTZ_IMPL_PIPE
-#undef BLTZ_IMPL_PIPE
-#undef BGEZ_IMPL_PIPE
-#undef BC1F_IMPL_PIPE
-#undef BC1T_IMPL_PIPE
-#undef LB_IMPL_PIPE
-#undef LBU_IMPL_PIPE
-#undef LH_IMPL_PIPE
-#undef LHU_IMPL_PIPE
-#undef LW_IMPL_PIPE
-#undef DLW_IMPL_PIPE
-#undef L_S_IMPL_PIPE
-#undef L_D_IMPL_PIPE
-#undef SB_IMPL_PIPE
-#undef SH_IMPL_PIPE
-#undef SW_IMPL_PIPE
-#undef DSW_IMPL_PIPE
-#undef DSZ_IMPL_PIPE
-#undef S_S_IMPL_PIPE
-#undef S_D_IMPL_PIPE
-#undef LB_RR_IMPL_PIPE
-#undef LBU_RR_IMPL_PIPE
-#undef LH_RR_IMPL_PIPE
-#undef LHU_RR_IMPL_PIPE
-#undef LW_RR_IMPL_PIPE
-#undef DLW_RR_IMPL_PIPE
-#undef L_S_RR_IMPL_PIPE
-#undef L_D_RR_IMPL_PIPE
-#undef SB_RR_IMPL_PIPE
-#undef SH_RR_IMPL_PIPE
-#undef SW_RR_IMPL_PIPE
-#undef DSW_RR_IMPL_PIPE
-#undef DSZ_RR_IMPL_PIPE
-#undef S_S_RR_IMPL_PIPE
-#undef S_D_RR_IMPL_PIPE
-#undef L_S_RR_R2_IMPL_PIPE
-#undef S_S_RR_R2_IMPL_PIPE
-#undef LW_RR_R2_IMPL_PIPE
-#undef SW_RR_R2_IMPL_PIPE
-#undef ADD_IMPL_PIPE
-#undef ADDI_IMPL_PIPE
-#undef ADDU_IMPL_PIPE
-#undef ADDIU_IMPL_PIPE
-#undef SUB_IMPL_PIPE
-#undef ADDOK_IMPL_PIPE
-#undef BITCOUNT_IMPL_PIPE
-#undef SUBU_IMPL_PIPE
-#undef MULT_IMPL_PIPE
-#undef MULTU_IMPL_PIPE
-#undef DIV_IMPL_PIPE
-#undef DIVU_IMPL_PIPE
-#undef MFHI_IMPL_PIPE
-#undef MTHI_IMPL_PIPE
-#undef MFLO_IMPL_PIPE
-#undef MTLO_IMPL_PIPE
-#undef AND__IMPL_PIPE
-#undef ANDI_IMPL_PIPE
-#undef OR_IMPL_PIPE
-#undef ORI_IMPL_PIPE
-#undef XOR_IMPL_PIPE
-#undef XORI_IMPL_PIPE
-#undef NOR_IMPL_PIPE
-#undef SLL_IMPL_PIPE
-#undef SLLV_IMPL_PIPE
-#undef SRL_IMPL_PIPE
-#undef SRLV_IMPL_PIPE
-#undef SRA_IMPL_PIPE
-#undef SRAV_IMPL_PIPE
-#undef SLT_IMPL_PIPE
-#undef SLTI_IMPL_PIPE
-#undef SLTU_IMPL_PIPE
-#undef SLTIU_IMPL_PIPE
-#undef FADD_S_IMPL_PIPE
-#undef FADD_D_IMPL_PIPE
-#undef FSUB_S_IMPL_PIPE
-#undef FSUB_D_IMPL_PIPE
-#undef FMUL_S_IMPL_PIPE
-#undef FMUL_D_IMPL_PIPE
-#undef FDIV_S_IMPL_PIPE
-#undef FDIV_D_IMPL_PIPE
-#undef FABS_S_IMPL_PIPE
-#undef FABS_D_IMPL_PIPE
-#undef FMOV_S_IMPL_PIPE
-#undef FMOV_D_IMPL_PIPE
-#undef FNEG_S_IMPL_PIPE
-#undef FNEG_D_IMPL_PIPE
-#undef CVT_S_D_IMPL_PIPE
-#undef CVT_S_W_IMPL_PIPE
-#undef CVT_D_S_IMPL_PIPE
-#undef CVT_D_W_IMPL_PIPE
-#undef CVT_W_S_IMPL_PIPE
-#undef CVT_W_D_IMPL_PIPE
-#undef C_EQ_S_IMPL_PIPE
-#undef C_EQ_D_IMPL_PIPE
-#undef C_LT_S_IMPL_PIPE
-#undef C_LT_D_IMPL_PIPE
-#undef C_LE_S_IMPL_PIPE
-#undef C_LE_D_IMPL_PIPE
-#undef FSQRT_S_IMPL_PIPE
-#undef FSQRT_D_IMPL_PIPE
-#undef SYSCALL_IMPL_PIPE
-#undef BREAK_IMPL_PIPE
-#undef LUI_IMPL_PIPE
-#undef MFC1_IMPL_PIPE
-#undef DMFC1_IMPL_PIPE
-#undef CFC1_IMPL_PIPE
-#undef MTC1_IMPL_PIPE
-#undef DMTC1_IMPL_PIPE
-#undef CTC1_IMPL_PIPE
-#undef LWL_IMPL_PIPE
-#undef LWR_IMPL_PIPE
-#undef SWL_IMPL_PIPE
-#undef SWR_IMPL_PIPE
 
 #undef DEFINST
 #undef DEFLINK

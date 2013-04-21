@@ -95,7 +95,7 @@ void sim_init(void)
     /* IF/ID */
 
     /* ID/EX */
-    de.latched = 0;
+
     /* EX/MEM */
 
     /* MEM/WB */
@@ -143,7 +143,7 @@ void sim_uninit(void)
 /* general purpose registers */
 #define GPR(N)      (regs.regs_R[N])
 #define SET_GPR(N,EXPR)   (regs.regs_R[N] = (EXPR))
-#define DECLARE_FAULT(EXP)  {;}
+#define DECLARE_FAULT(EXP)  { break; }
 
 #ifdef TARGET_PISA
 /* floating point registers, L->word, F->single-prec, D->double-prec */
@@ -228,7 +228,6 @@ void do_if()
 {
     md_inst_t inst;
     if (em.needJump == 1) {
-        fd.NPC = em.aluOutput;
         /* TODO */
     } else {
         fd.NPC = fd.PC + sizeof(md_inst_t);
@@ -242,40 +241,66 @@ void do_id()
 {
     de.inst = fd.inst;
     MD_SET_OPCODE(de.opcode, de.inst);
-    de.PC = fd.PC;
+
     md_inst_t inst = de.inst;
-#define DEFINST(OP,MSK,NAME,OPFORM,RES,FLAGS,O1,O2,I1,I2,I3)  \
-    if (OP == de.opcode){  \
-        de.instFlags = FLAGS;  \
-        de.oprand.out1 = O1;  \
-        de.oprand.out2 = O2;  \
-        de.oprand.in1 = I1;  \
-        de.oprand.in2 = I2;  \
-        de.oprand.in3 = I3;  \
-        goto READ_OPRAND_VALUE;  \
-    }
-#define DEFLINK(OP,MSK,NAME,MASK,SHIFT)
+    /* execute the instruction */
+    switch (de.opcode) {
+#define DEFINST(OP,MSK,NAME,OPFORM,RES,FLAGS,O1,O2,I1,I2,I3)		\
+	case OP:				     \
+	    de.flags = FLAGS;    \
+	    de.res = RES;       \
+        de.port.dstE = O1;     \
+        de.port.dstF = O2;     \
+        de.port.dstM = DNA;    \
+        de.port.dstN = DNA;    \
+        de.port.srcA = I1;     \
+        de.port.srcB = I2;     \
+        de.port.srcC = I3;     \
+        de.valA = GPR(I1);     \
+        de.valB = GPR(I2);     \
+	    break;
+#define DEFLINK(OP,MSK,NAME,MASK,SHIFT)	\
+	case OP:							\
+	    panic("attempted to execute a linking opcode");
 #define CONNECT(OP)
 #include "machine.def"
-READ_OPRAND_VALUE:
-    switch(de.opcode) {
-    case ADDU:
-    case ADDIU:
-    case SLTI:
-        /* de.oprand.cons.imm = IMM; */
-        break;
-        /* TODO */
+    default:
+        panic("attempted to execute a bogus opcode");
     }
 }
 
 void do_ex()
 {
     em.inst = de.inst;
+    em.opcode = de.opcode;
+    em.flags = de.flags;
+    em.res = de.res;
+    em.port = de.port;
+    em.valA = de.valA;
+
+    md_inst_t inst = em.inst;
+    /* execute the instruction */
+    switch (em.opcode) {
+#define DEFINST(OP,MSK,NAME,OPFORM,RES,FLAGS,O1,O2,I1,I2,I3)		\
+	case OP:				     \
+        SYMCAT(OP,_IMPL_PIPE);  \
+        break;
+#define DEFLINK(OP,MSK,NAME,MASK,SHIFT)	\
+	case OP:							\
+	    panic("attempted to execute a linking opcode");
+#define CONNECT(OP)
+#include "machine.def"
+    default:
+        panic("attempted to execute a bogus opcode");
+    }
 }
 
 void do_mem()
 {
     mw.inst = em.inst;
+    mw.flags = em.flags;
+    mw.res = em.res;
+    mw.port = em.port;
 }
 
 void do_wb()
