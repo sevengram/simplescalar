@@ -8,6 +8,7 @@ Makefile.bak
 sysprobe
 sim-fast
 sim-safe
+sim-pipe
 sim-eio
 sim-bpred
 sim-profile
