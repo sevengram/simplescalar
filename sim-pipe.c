@@ -25,41 +25,37 @@ static struct regs_t regs;
 static struct mem_t *mem = NULL;
 
 /* register simulator-specific options */
-void
-sim_reg_options(struct opt_odb_t *odb)
+void sim_reg_options(struct opt_odb_t *odb)
 {
-  opt_reg_header(odb, 
-"sim-pipe: This simulator implements based on sim-fast.\n"
-		 );
+    opt_reg_header(odb, 
+        "sim-pipe: This simulator implements based on sim-fast.\n");
 }
 
 /* check simulator-specific option values */
-void
-sim_check_options(struct opt_odb_t *odb, int argc, char **argv)
+void sim_check_options(struct opt_odb_t *odb, int argc, char **argv)
 {
-  if (dlite_active)
-    fatal("sim-pipe does not support DLite debugging");
+    if (dlite_active)
+        fatal("sim-pipe does not support DLite debugging");
 }
 
 /* register simulator-specific statistics */
-void
-sim_reg_stats(struct stat_sdb_t *sdb)
+void sim_reg_stats(struct stat_sdb_t *sdb)
 {
 #ifndef NO_INSN_COUNT
-  stat_reg_counter(sdb, "sim_num_insn",
-		   "total number of instructions executed",
-		   &sim_num_insn, sim_num_insn, NULL);
+    stat_reg_counter(sdb, "sim_num_insn",
+             "total number of instructions executed",
+             &sim_num_insn, sim_num_insn, NULL);
 #endif /* !NO_INSN_COUNT */
-  stat_reg_int(sdb, "sim_elapsed_time",
-	       "total simulation time in seconds",
-	       &sim_elapsed_time, 0, NULL);
+    stat_reg_int(sdb, "sim_elapsed_time",
+        "total simulation time in seconds",
+        &sim_elapsed_time, 0, NULL);
 #ifndef NO_INSN_COUNT
-  stat_reg_formula(sdb, "sim_inst_rate",
-		   "simulation speed (in insts/sec)",
-		   "sim_num_insn / sim_elapsed_time", NULL);
+    stat_reg_formula(sdb, "sim_inst_rate",
+             "simulation speed (in insts/sec)",
+             "sim_num_insn / sim_elapsed_time", NULL);
 #endif /* !NO_INSN_COUNT */
-  ld_reg_stats(sdb);
-  mem_reg_stats(mem, sdb);
+    ld_reg_stats(sdb);
+    mem_reg_stats(mem, sdb);
 }
 
 struct ifid_buf fd;
@@ -67,71 +63,66 @@ struct idex_buf de;
 struct exmem_buf em;
 struct memwb_buf mw;
 
-#define DNA			(-1)
+#define DNA          (-1)
 
 /* general register dependence decoders */
-#define DGPR(N)			(N)
-#define DGPR_D(N)		((N) &~1)
+#define DGPR(N)      (N)
+#define DGPR_D(N)    ((N) &~1)
 
 /* floating point register dependence decoders */
-#define DFPR_L(N)		(((N)+32)&~1)
-#define DFPR_F(N)		(((N)+32)&~1)
-#define DFPR_D(N)		(((N)+32)&~1)
+#define DFPR_L(N)   (((N)+32)&~1)
+#define DFPR_F(N)   (((N)+32)&~1)
+#define DFPR_D(N)   (((N)+32)&~1)
 
 /* miscellaneous register dependence decoders */
-#define DHI			(0+32+32)
-#define DLO			(1+32+32)
-#define DFCC		(2+32+32)
-#define DTMP		(3+32+32)
+#define DHI     (0+32+32)
+#define DLO     (1+32+32)
+#define DFCC    (2+32+32)
+#define DTMP    (3+32+32)
 
 /* initialize the simulator */
-void
-sim_init(void)
+void sim_init(void)
 {
-  /* allocate and initialize register file */
-  regs_init(&regs);
+    /* allocate and initialize register file */
+    regs_init(&regs);
 
-  /* allocate and initialize memory space */
-  mem = mem_create("mem");
-  mem_init(mem);
+    /* allocate and initialize memory space */
+    mem = mem_create("mem");
+    mem_init(mem);
 
-  /* initialize stage latches*/
+    /* initialize stage latches*/
  
-  /* IF/ID */
+    /* IF/ID */
 
-  /* ID/EX */
-  de.latched = 0;
-  /* EX/MEM */
+    /* ID/EX */
+    de.latched = 0;
+    /* EX/MEM */
 
-  /* MEM/WB */
+    /* MEM/WB */
 
 }
 
 /* load program into simulated state */
-void
-sim_load_prog(char *fname,		/* program to load */
-	      int argc, char **argv,	/* program arguments */
-	      char **envp)		/* program environment */
+void sim_load_prog(char *fname,    /* program to load */
+                int argc, char **argv,  /* program arguments */
+                char **envp)    /* program environment */
 {
-  /* load program text and data, set up environment, memory, and regs */
-  ld_load_prog(fname, argc, argv, envp, &regs, mem, TRUE);
+    /* load program text and data, set up environment, memory, and regs */
+    ld_load_prog(fname, argc, argv, envp, &regs, mem, TRUE);
 }
 
 /* print simulator-specific configuration information */
-void
-sim_aux_config(FILE *stream)
+void sim_aux_config(FILE *stream)
 {  
-	/* nothing currently */
+    /* nothing currently */
 }
 
 /* dump simulator-specific auxiliary simulator statistics */
-void
-sim_aux_stats(FILE *stream)
+void sim_aux_stats(FILE *stream)
 {  /* nada */}
 
 /* un-initialize simulator-specific state */
-void 
-sim_uninit(void)
+void sim_uninit(void)
 { /* nada */ }
 
 
@@ -140,102 +131,100 @@ sim_uninit(void)
  */
 
 /* next program counter */
-#define SET_NPC(EXPR)		(regs.regs_NPC = (EXPR))
+#define SET_NPC(EXPR)   (regs.regs_NPC = (EXPR))
 
 /* current program counter */
-#define CPC			(regs.regs_PC)
+#define CPC     (regs.regs_PC)
 
 /* general purpose registers */
-#define GPR(N)			(regs.regs_R[N])
-#define SET_GPR(N,EXPR)		(regs.regs_R[N] = (EXPR))
-#define DECLARE_FAULT(EXP) 	{;}
+#define GPR(N)      (regs.regs_R[N])
+#define SET_GPR(N,EXPR)   (regs.regs_R[N] = (EXPR))
+#define DECLARE_FAULT(EXP)  {;}
 #if defined(TARGET_PISA)
 
 /* floating point registers, L->word, F->single-prec, D->double-prec */
-#define FPR_L(N)		(regs.regs_F.l[(N)])
-#define SET_FPR_L(N,EXPR)	(regs.regs_F.l[(N)] = (EXPR))
-#define FPR_F(N)		(regs.regs_F.f[(N)])
-#define SET_FPR_F(N,EXPR)	(regs.regs_F.f[(N)] = (EXPR))
-#define FPR_D(N)		(regs.regs_F.d[(N) >> 1])
-#define SET_FPR_D(N,EXPR)	(regs.regs_F.d[(N) >> 1] = (EXPR))
+#define FPR_L(N)    (regs.regs_F.l[(N)])
+#define SET_FPR_L(N,EXPR) (regs.regs_F.l[(N)] = (EXPR))
+#define FPR_F(N)    (regs.regs_F.f[(N)])
+#define SET_FPR_F(N,EXPR) (regs.regs_F.f[(N)] = (EXPR))
+#define FPR_D(N)    (regs.regs_F.d[(N) >> 1])
+#define SET_FPR_D(N,EXPR) (regs.regs_F.d[(N) >> 1] = (EXPR))
 
 /* miscellaneous register accessors */
-#define SET_HI(EXPR)		(regs.regs_C.hi = (EXPR))
-#define HI			(regs.regs_C.hi)
-#define SET_LO(EXPR)		(regs.regs_C.lo = (EXPR))
-#define LO			(regs.regs_C.lo)
-#define FCC			(regs.regs_C.fcc)
-#define SET_FCC(EXPR)		(regs.regs_C.fcc = (EXPR))
+#define SET_HI(EXPR)    (regs.regs_C.hi = (EXPR))
+#define HI      (regs.regs_C.hi)
+#define SET_LO(EXPR)    (regs.regs_C.lo = (EXPR))
+#define LO      (regs.regs_C.lo)
+#define FCC     (regs.regs_C.fcc)
+#define SET_FCC(EXPR)   (regs.regs_C.fcc = (EXPR))
 
 #endif
 
 /* precise architected memory state accessor macros */
-#define READ_BYTE(SRC, FAULT)						\
-  ((FAULT) = md_fault_none, MEM_READ_BYTE(mem, (SRC)))
-#define READ_HALF(SRC, FAULT)						\
-  ((FAULT) = md_fault_none, MEM_READ_HALF(mem, (SRC)))
-#define READ_WORD(SRC, FAULT)						\
-  ((FAULT) = md_fault_none, MEM_READ_WORD(mem, (SRC)))
+#define READ_BYTE(SRC, FAULT)           \
+    ((FAULT) = md_fault_none, MEM_READ_BYTE(mem, (SRC)))
+#define READ_HALF(SRC, FAULT)           \
+    ((FAULT) = md_fault_none, MEM_READ_HALF(mem, (SRC)))
+#define READ_WORD(SRC, FAULT)           \
+    ((FAULT) = md_fault_none, MEM_READ_WORD(mem, (SRC)))
 #ifdef HOST_HAS_QWORD
-#define READ_QWORD(SRC, FAULT)						\
-  ((FAULT) = md_fault_none, MEM_READ_QWORD(mem, (SRC)))
+#define READ_QWORD(SRC, FAULT)            \
+    ((FAULT) = md_fault_none, MEM_READ_QWORD(mem, (SRC)))
 #endif /* HOST_HAS_QWORD */
 
-#define WRITE_BYTE(SRC, DST, FAULT)					\
-  ((FAULT) = md_fault_none, MEM_WRITE_BYTE(mem, (DST), (SRC)))
-#define WRITE_HALF(SRC, DST, FAULT)					\
-  ((FAULT) = md_fault_none, MEM_WRITE_HALF(mem, (DST), (SRC)))
-#define WRITE_WORD(SRC, DST, FAULT)					\
-  ((FAULT) = md_fault_none, MEM_WRITE_WORD(mem, (DST), (SRC)))
+#define WRITE_BYTE(SRC, DST, FAULT)         \
+    ((FAULT) = md_fault_none, MEM_WRITE_BYTE(mem, (DST), (SRC)))
+#define WRITE_HALF(SRC, DST, FAULT)         \
+    ((FAULT) = md_fault_none, MEM_WRITE_HALF(mem, (DST), (SRC)))
+#define WRITE_WORD(SRC, DST, FAULT)         \
+    ((FAULT) = md_fault_none, MEM_WRITE_WORD(mem, (DST), (SRC)))
 #ifdef HOST_HAS_QWORD
-#define WRITE_QWORD(SRC, DST, FAULT)					\
-  ((FAULT) = md_fault_none, MEM_WRITE_QWORD(mem, (DST), (SRC)))
+#define WRITE_QWORD(SRC, DST, FAULT)          \
+    ((FAULT) = md_fault_none, MEM_WRITE_QWORD(mem, (DST), (SRC)))
 #endif /* HOST_HAS_QWORD */
 
 /* system call handler macro */
-#define SYSCALL(INST)	sys_syscall(&regs, mem_access, mem, INST, TRUE)
+#define SYSCALL(INST) sys_syscall(&regs, mem_access, mem, INST, TRUE)
 
 #ifndef NO_INSN_COUNT
-#define INC_INSN_CTR()	sim_num_insn++
+#define INC_INSN_CTR()  sim_num_insn++
 #else /* !NO_INSN_COUNT */
-#define INC_INSN_CTR()	/* nada */
+#define INC_INSN_CTR()  /* nada */
 #endif /* NO_INSN_COUNT */
 
 
 /* start simulation, program loaded, processor precise state initialized */
-void
-sim_main(void)
+void sim_main(void)
 {
-  fprintf(stderr, "sim: ** starting *pipe* functional simulation **\n");
+    fprintf(stderr, "sim: ** starting *pipe* functional simulation **\n");
 
-  /* must have natural byte/word ordering */
-  if (sim_swap_bytes || sim_swap_words)
-    fatal("sim: *pipe* functional simulation cannot swap bytes or words");
+    /* must have natural byte/word ordering */
+    if (sim_swap_bytes || sim_swap_words)
+        fatal("sim: *pipe* functional simulation cannot swap bytes or words");
 
-  /* set up initial default next PC */
-  regs.regs_NPC = regs.regs_PC + sizeof(md_inst_t);
-  /* maintain $r0 semantics */
-  regs.regs_R[MD_REG_ZERO] = 0;
+    /* set up initial default next PC */
+    regs.regs_NPC = regs.regs_PC + sizeof(md_inst_t);
+    /* maintain $r0 semantics */
+    regs.regs_R[MD_REG_ZERO] = 0;
  
-  while (TRUE)
-  {
-    /* TODO */ 
-    /*start your pipeline simulation here*/
-  }
+    while (TRUE) {
+        /* TODO */ 
+        /*start your pipeline simulation here*/
+    }
 }
 
 void do_if()
 {
-  md_inst_t instruction;
-  if (em.needJump == 1){
-  	fd.NPC = em.aluOutput;
-    /* TODO */
-  }else{
-  	fd.NPC = fd.PC + sizeof(md_inst_t);
-  }
-  fd.PC =fd.NPC;
-  MD_FETCH_INSTI(instruction, mem, fd.PC);
-  fd.inst = instruction;
+    md_inst_t instruction;
+    if (em.needJump == 1) {
+        fd.NPC = em.aluOutput;
+        /* TODO */
+    } else {
+        fd.NPC = fd.PC + sizeof(md_inst_t);
+    }
+    fd.PC =fd.NPC;
+    MD_FETCH_INSTI(instruction, mem, fd.PC);
+    fd.inst = instruction;
 }
 
 void do_id()
@@ -245,41 +234,40 @@ void do_id()
     de.PC = fd.PC;
     md_inst_t inst = de.inst;
 #define DEFINST(OP,MSK,NAME,OPFORM,RES,FLAGS,O1,O2,I1,I2,I3)  \
-  if (OP == de.opcode){  \
-    de.instFlags = FLAGS;  \
-    de.oprand.out1 = O1;  \
-    de.oprand.out2 = O2;  \
-    de.oprand.in1 = I1;  \
-    de.oprand.in2 = I2;  \
-    de.oprand.in3 = I3;  \
-    goto READ_OPRAND_VALUE;  \
-  }
+    if (OP == de.opcode){  \
+        de.instFlags = FLAGS;  \
+        de.oprand.out1 = O1;  \
+        de.oprand.out2 = O2;  \
+        de.oprand.in1 = I1;  \
+        de.oprand.in2 = I2;  \
+        de.oprand.in3 = I3;  \
+        goto READ_OPRAND_VALUE;  \
+    }
 #define DEFLINK(OP,MSK,NAME,MASK,SHIFT)
 #define CONNECT(OP)
 #include "machine.def"
 READ_OPRAND_VALUE:
     switch(de.opcode){
-    case ADDU:
-    case ADDIU:
-    case SLTI:
-      /* de.oprand.cons.imm = IMM; */
-      break;
-      /* TODO */
-  }
+        case ADDU:
+        case ADDIU:
+        case SLTI:
+            /* de.oprand.cons.imm = IMM; */
+            break;
+        /* TODO */
+    }
 }
 
 void do_ex()
 {
-  em.inst = de.inst;
+    em.inst = de.inst;
 }
 
 void do_mem()
 {
-  mw.inst = em.inst;
+    mw.inst = em.inst;
 }
 
 void do_wb()
 {
-  /* TODO */
+    /* TODO */
 }
-
