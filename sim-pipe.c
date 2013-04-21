@@ -27,8 +27,8 @@ static struct mem_t *mem = NULL;
 /* register simulator-specific options */
 void sim_reg_options(struct opt_odb_t *odb)
 {
-    opt_reg_header(odb, 
-        "sim-pipe: This simulator implements based on sim-fast.\n");
+    opt_reg_header(odb,
+                   "sim-pipe: This simulator implements based on sim-fast.\n");
 }
 
 /* check simulator-specific option values */
@@ -43,16 +43,16 @@ void sim_reg_stats(struct stat_sdb_t *sdb)
 {
 #ifndef NO_INSN_COUNT
     stat_reg_counter(sdb, "sim_num_insn",
-             "total number of instructions executed",
-             &sim_num_insn, sim_num_insn, NULL);
+                     "total number of instructions executed",
+                     &sim_num_insn, sim_num_insn, NULL);
 #endif /* !NO_INSN_COUNT */
     stat_reg_int(sdb, "sim_elapsed_time",
-        "total simulation time in seconds",
-        &sim_elapsed_time, 0, NULL);
+                 "total simulation time in seconds",
+                 &sim_elapsed_time, 0, NULL);
 #ifndef NO_INSN_COUNT
     stat_reg_formula(sdb, "sim_inst_rate",
-             "simulation speed (in insts/sec)",
-             "sim_num_insn / sim_elapsed_time", NULL);
+                     "simulation speed (in insts/sec)",
+                     "sim_num_insn / sim_elapsed_time", NULL);
 #endif /* !NO_INSN_COUNT */
     ld_reg_stats(sdb);
     mem_reg_stats(mem, sdb);
@@ -91,7 +91,7 @@ void sim_init(void)
     mem_init(mem);
 
     /* initialize stage latches*/
- 
+
     /* IF/ID */
 
     /* ID/EX */
@@ -104,8 +104,8 @@ void sim_init(void)
 
 /* load program into simulated state */
 void sim_load_prog(char *fname,    /* program to load */
-                int argc, char **argv,  /* program arguments */
-                char **envp)    /* program environment */
+                   int argc, char **argv,  /* program arguments */
+                   char **envp)    /* program environment */
 {
     /* load program text and data, set up environment, memory, and regs */
     ld_load_prog(fname, argc, argv, envp, &regs, mem, TRUE);
@@ -113,17 +113,21 @@ void sim_load_prog(char *fname,    /* program to load */
 
 /* print simulator-specific configuration information */
 void sim_aux_config(FILE *stream)
-{  
+{
     /* nothing currently */
 }
 
 /* dump simulator-specific auxiliary simulator statistics */
 void sim_aux_stats(FILE *stream)
-{  /* nada */}
+{
+    /* nada */
+}
 
 /* un-initialize simulator-specific state */
 void sim_uninit(void)
-{ /* nada */ }
+{
+    /* nada */
+}
 
 
 /*
@@ -140,8 +144,8 @@ void sim_uninit(void)
 #define GPR(N)      (regs.regs_R[N])
 #define SET_GPR(N,EXPR)   (regs.regs_R[N] = (EXPR))
 #define DECLARE_FAULT(EXP)  {;}
-#if defined(TARGET_PISA)
 
+#ifdef TARGET_PISA
 /* floating point registers, L->word, F->single-prec, D->double-prec */
 #define FPR_L(N)    (regs.regs_F.l[(N)])
 #define SET_FPR_L(N,EXPR) (regs.regs_F.l[(N)] = (EXPR))
@@ -157,8 +161,7 @@ void sim_uninit(void)
 #define LO      (regs.regs_C.lo)
 #define FCC     (regs.regs_C.fcc)
 #define SET_FCC(EXPR)   (regs.regs_C.fcc = (EXPR))
-
-#endif
+#endif /* TARGET_PISA */
 
 /* precise architected memory state accessor macros */
 #define READ_BYTE(SRC, FAULT)           \
@@ -167,6 +170,7 @@ void sim_uninit(void)
     ((FAULT) = md_fault_none, MEM_READ_HALF(mem, (SRC)))
 #define READ_WORD(SRC, FAULT)           \
     ((FAULT) = md_fault_none, MEM_READ_WORD(mem, (SRC)))
+
 #ifdef HOST_HAS_QWORD
 #define READ_QWORD(SRC, FAULT)            \
     ((FAULT) = md_fault_none, MEM_READ_QWORD(mem, (SRC)))
@@ -178,6 +182,7 @@ void sim_uninit(void)
     ((FAULT) = md_fault_none, MEM_WRITE_HALF(mem, (DST), (SRC)))
 #define WRITE_WORD(SRC, DST, FAULT)         \
     ((FAULT) = md_fault_none, MEM_WRITE_WORD(mem, (DST), (SRC)))
+
 #ifdef HOST_HAS_QWORD
 #define WRITE_QWORD(SRC, DST, FAULT)          \
     ((FAULT) = md_fault_none, MEM_WRITE_QWORD(mem, (DST), (SRC)))
@@ -204,27 +209,33 @@ void sim_main(void)
 
     /* set up initial default next PC */
     regs.regs_NPC = regs.regs_PC + sizeof(md_inst_t);
-    /* maintain $r0 semantics */
-    regs.regs_R[MD_REG_ZERO] = 0;
- 
+
     while (TRUE) {
-        /* TODO */ 
-        /*start your pipeline simulation here*/
+        /* maintain $r0 semantics */
+        regs.regs_R[MD_REG_ZERO] = 0;
+
+        /* keep an instruction count */
+#ifndef NO_INSN_COUNT
+        sim_num_insn++;
+#endif /* !NO_INSN_COUNT */
+
+        /* TODO */
+
     }
 }
 
 void do_if()
 {
-    md_inst_t instruction;
+    md_inst_t inst;
     if (em.needJump == 1) {
         fd.NPC = em.aluOutput;
         /* TODO */
     } else {
         fd.NPC = fd.PC + sizeof(md_inst_t);
     }
-    fd.PC =fd.NPC;
-    MD_FETCH_INSTI(instruction, mem, fd.PC);
-    fd.inst = instruction;
+    fd.PC = fd.NPC;
+    MD_FETCH_INSTI(inst, mem, fd.PC);
+    fd.inst = inst;
 }
 
 void do_id()
@@ -247,12 +258,12 @@ void do_id()
 #define CONNECT(OP)
 #include "machine.def"
 READ_OPRAND_VALUE:
-    switch(de.opcode){
-        case ADDU:
-        case ADDIU:
-        case SLTI:
-            /* de.oprand.cons.imm = IMM; */
-            break;
+    switch(de.opcode) {
+    case ADDU:
+    case ADDIU:
+    case SLTI:
+        /* de.oprand.cons.imm = IMM; */
+        break;
         /* TODO */
     }
 }

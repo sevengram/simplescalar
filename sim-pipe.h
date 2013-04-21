@@ -13,8 +13,8 @@ typedef struct {
 
 /*define buffer between fetch and decode stage*/
 struct ifid_buf {
-    md_inst_t inst;     /* instruction that has been fetched */
-    md_addr_t PC;         /* pc value of current instruction */
+    md_inst_t inst;   /* instruction that has been fetched */
+    md_addr_t PC;     /* pc value of current instruction */
     md_addr_t NPC;    /* the next instruction to fetch */
 };
 
