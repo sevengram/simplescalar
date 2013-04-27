@@ -16,12 +16,13 @@ struct port_t{
 struct ifid_buf {
     md_inst_t inst;   /* instruction that has been fetched */
     md_addr_t PC;     /* pc value of current instruction */
-    md_addr_t NPC;    /* the next instruction to fetch */
+    md_addr_t valP;    /* the next instruction to fetch */
 };
 
 /*define buffer between decode and execute stage*/
 struct idex_buf {
     md_inst_t inst;   /* instruction in ID stage */
+    md_addr_t PC;     /* pc value of current instruction */
     enum md_opcode opcode; /* operation number */
     enum md_fu_class res;
     int flags;
@@ -33,6 +34,7 @@ struct idex_buf {
 /*define buffer between execute and memory stage*/
 struct exmem_buf{
     md_inst_t inst;   /* instruction in EX stage */
+    md_addr_t PC;     /* pc value of current instruction */
     enum md_opcode opcode; /* operation number */
     enum md_fu_class res;
     int flags;
@@ -45,6 +47,7 @@ struct exmem_buf{
 /*define buffer between memory and writeback stage*/
 struct memwb_buf{
     md_inst_t inst;   /* instruction in MEM stage */
+    md_addr_t PC;     /* pc value of current instruction */
     enum md_fu_class res;
     int flags;
     struct port_t port;  /* operand */

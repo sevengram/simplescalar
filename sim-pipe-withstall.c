@@ -209,12 +209,11 @@ void sim_main(void)
     if (sim_swap_bytes || sim_swap_words)
         fatal("sim: *pipe* functional simulation cannot swap bytes or words");
 
-    /* set up initial default next PC */
-    regs.regs_NPC = regs.regs_PC + sizeof(md_inst_t);
+    fd.valP = regs.regs_PC;
 
     while (TRUE) {
         cycle_count++;
-        fprintf(stderr, "Cycle %d:\n", cycle_count);
+        fprintf(stderr, "[Cycle %d]-------------------------------\n", cycle_count);
 
         /* maintain $r0 semantics */
         regs.regs_R[MD_REG_ZERO] = 0;
@@ -234,6 +233,8 @@ void sim_main(void)
 
         do_if();
 
+        fprintf(stderr, "---------------------------------------\n");
+
         if (cycle_count == 20){
             exit(0);
         }
@@ -242,37 +243,45 @@ void sim_main(void)
 
 void do_if()
 {
-    md_inst_t inst;
     if (em.cond == 1) {
         /* TODO */
     } else {
-        fd.NPC = fd.PC + sizeof(md_inst_t);
+        fd.PC = fd.valP;
     }
-    fd.PC = fd.NPC;
 
-    fprintf(stderr,"PC: %d\n", fd.PC);
+    MD_FETCH_INSTI(fd.inst, mem, fd.PC);
 
-    MD_FETCH_INSTI(inst, mem, fd.PC);
+    if (fd.inst.a != 0){
+        fprintf(stderr, "[IF]  ");
+        md_print_insn(fd.inst, fd.PC, stderr);
+        fprintf(stderr, "\n");
+    } else {
+        fprintf(stderr, "[IF]  Empty\n");
+    }
 
-    fd.inst = inst;
 
-    fprintf(stderr,"Inst: %d\n", fd.inst);
+    fd.valP = fd.PC + sizeof(md_inst_t);
 }
 
 void do_id()
 {
+    de.PC = fd.PC;
     de.inst = fd.inst;
-    MD_SET_OPCODE(de.opcode, de.inst);
 
-    md_inst_t inst = de.inst;
-
-    if (de.opcode != 0){
-        fprintf(stderr,"opcode: %d\n", de.opcode);
+    if (de.inst.a != 0){
+        fprintf(stderr, "[ID]  ");
+        md_print_insn(de.inst, de.PC, stderr);
+        fprintf(stderr, "\n");
+    } else {
+        fprintf(stderr, "[ID]  Empty\n");
     }
 
+    MD_SET_OPCODE(de.opcode, de.inst);
     if (de.opcode == 0){
         return;
     }
+
+    md_inst_t inst = de.inst;
 
     /* execute the instruction */
     switch (de.opcode) {
@@ -304,6 +313,7 @@ void do_id()
 
 void do_ex()
 {
+    em.PC = de.PC;
     em.inst = de.inst;
     em.opcode = de.opcode;
     em.flags = de.flags;
@@ -313,8 +323,12 @@ void do_ex()
     em.valE = 0;
     em.cond = 0;
 
-    if (em.opcode != 0){
-        fprintf(stderr,"opcode: %d\n", em.opcode);
+    if (em.inst.a != 0){
+        fprintf(stderr, "[EX]  ");
+        md_print_insn(em.inst, em.PC, stderr);
+        fprintf(stderr, "\n");
+    } else {
+        fprintf(stderr, "[EX]  Empty\n");
     }
 
     if (em.opcode == 0){
@@ -342,12 +356,21 @@ void do_ex()
 void do_mem()
 {
     enum md_fault_type _fault;
+    mw.PC = em.PC;
     mw.inst = em.inst;
     mw.flags = em.flags;
     mw.res = em.res;
     mw.port = em.port;
     mw.valE = em.valE;
     mw.valM = 0;
+
+    if (mw.inst.a != 0){
+        fprintf(stderr, "[MEM] ");
+        md_print_insn(mw.inst, mw.PC, stderr);
+        fprintf(stderr, "\n");
+    } else {
+        fprintf(stderr, "[MEM] Empty\n");
+    }
 
     switch (mw.res) {
     case WrPort:
@@ -367,6 +390,14 @@ void do_mem()
 
 void do_wb()
 {
+    if (mw.inst.a != 0){
+        fprintf(stderr, "[WB]  ");
+        md_print_insn(mw.inst, mw.PC, stderr);
+        fprintf(stderr, "\n");
+    } else {
+        fprintf(stderr, "[WB]  Empty\n");
+    }
+
     if (mw.port.dstE != DNA)
         SET_GPR(mw.port.dstE, mw.valE);
     if (mw.port.dstM != DNA)

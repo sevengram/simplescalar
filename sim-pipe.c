@@ -230,9 +230,9 @@ void do_if()
     if (em.cond == 1) {
         /* TODO */
     } else {
-        fd.NPC = fd.PC + sizeof(md_inst_t);
+        fd.valP = fd.PC + sizeof(md_inst_t);
     }
-    fd.PC = fd.NPC;
+    fd.PC = fd.valP;
     MD_FETCH_INSTI(inst, mem, fd.PC);
     fd.inst = inst;
 }
