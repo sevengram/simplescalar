@@ -233,9 +233,9 @@ void sim_main(void)
 
         do_if();
 
-        fprintf(stderr, "---------------------------------------\n");
+        fprintf(stderr, "-----------------------------------------\n");
 
-        if (cycle_count == 20){
+        if (cycle_count == 30){
             exit(0);
         }
     }
@@ -277,7 +277,7 @@ void do_id()
     }
 
     MD_SET_OPCODE(de.opcode, de.inst);
-    if (de.opcode == 0){
+    if (de.opcode == OP_NA){
         return;
     }
 
@@ -323,7 +323,7 @@ void do_ex()
     em.valE = 0;
     em.cond = 0;
 
-    if (em.inst.a != 0){
+    if (em.opcode != OP_NA){
         fprintf(stderr, "[EX]  ");
         md_print_insn(em.inst, em.PC, stderr);
         fprintf(stderr, "\n");
@@ -331,7 +331,7 @@ void do_ex()
         fprintf(stderr, "[EX]  Empty\n");
     }
 
-    if (em.opcode == 0){
+    if (em.opcode == OP_NA){
         return;
     }
 
@@ -356,6 +356,7 @@ void do_ex()
 void do_mem()
 {
     enum md_fault_type _fault;
+    mw.opcode = em.opcode;
     mw.PC = em.PC;
     mw.inst = em.inst;
     mw.flags = em.flags;
@@ -364,7 +365,7 @@ void do_mem()
     mw.valE = em.valE;
     mw.valM = 0;
 
-    if (mw.inst.a != 0){
+    if (mw.opcode != OP_NA){
         fprintf(stderr, "[MEM] ");
         md_print_insn(mw.inst, mw.PC, stderr);
         fprintf(stderr, "\n");
@@ -390,7 +391,7 @@ void do_mem()
 
 void do_wb()
 {
-    if (mw.inst.a != 0){
+    if (mw.opcode != OP_NA){
         fprintf(stderr, "[WB]  ");
         md_print_insn(mw.inst, mw.PC, stderr);
         fprintf(stderr, "\n");
@@ -402,4 +403,8 @@ void do_wb()
         SET_GPR(mw.port.dstE, mw.valE);
     if (mw.port.dstM != DNA)
         SET_GPR(mw.port.dstM, mw.valM);
+
+    if (mw.opcode == SYSCALL){
+        SYSCALL(mw.inst);
+    }
 }

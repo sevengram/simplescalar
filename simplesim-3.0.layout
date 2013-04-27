@@ -16,7 +16,7 @@
 	<File name="host.h" open="0" top="0" tabpos="0">
 		<Cursor position="3569" topLine="75" />
 	</File>
-	<File name="machine.def" open="0" top="0" tabpos="3">
+	<File name="machine.def" open="1" top="0" tabpos="3">
 		<Cursor position="47889" topLine="2588" />
 	</File>
 	<File name="machine.h" open="0" top="0" tabpos="0">
@@ -29,7 +29,7 @@
 		<Cursor position="3749" topLine="86" />
 	</File>
 	<File name="sim-bpred.c" open="0" top="0" tabpos="0">
-		<Cursor position="14368" topLine="424" />
+		<Cursor position="14340" topLine="424" />
 	</File>
 	<File name="sim-fast.c" open="0" top="0" tabpos="0">
 		<Cursor position="13407" topLine="428" />
@@ -37,13 +37,13 @@
 	<File name="sim-outorder.c" open="0" top="0" tabpos="0">
 		<Cursor position="104546" topLine="3347" />
 	</File>
-	<File name="sim-pipe-withstall.c" open="0" top="0" tabpos="2">
+	<File name="sim-pipe-withstall.c" open="1" top="1" tabpos="2">
 		<Cursor position="8663" topLine="334" />
 	</File>
 	<File name="sim-pipe.c" open="0" top="0" tabpos="4">
 		<Cursor position="7763" topLine="275" />
 	</File>
-	<File name="sim-pipe.h" open="0" top="0" tabpos="1">
+	<File name="sim-pipe.h" open="1" top="0" tabpos="1">
 		<Cursor position="1460" topLine="37" />
 	</File>
 	<File name="sim-safe.c" open="0" top="0" tabpos="0">
@@ -61,7 +61,7 @@
 	<File name="target-pisa/pisa.def" open="0" top="0" tabpos="0">
 		<Cursor position="37967" topLine="1058" />
 	</File>
-	<File name="target-pisa/pisa.h" open="0" top="0" tabpos="5">
+	<File name="target-pisa/pisa.h" open="1" top="0" tabpos="5">
 		<Cursor position="5571" topLine="165" />
 	</File>
 	<File name="target-pisa/syscall.c" open="0" top="0" tabpos="0">

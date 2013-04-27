@@ -2267,7 +2267,6 @@ DEFINST(FSQRT_D,    0x97,
 #undef SYSCALL_IMPL_PIPE
 #define SYSCALL_IMPL_PIPE              \
   {                 \
-    SYSCALL(inst);              \
   }
 DEFINST(SYSCALL,    0xa0,
   "syscall",    "",

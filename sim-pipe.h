@@ -48,6 +48,7 @@ struct exmem_buf{
 struct memwb_buf{
     md_inst_t inst;   /* instruction in MEM stage */
     md_addr_t PC;     /* pc value of current instruction */
+    enum md_opcode opcode; /* operation number */
     enum md_fu_class res;
     int flags;
     struct port_t port;  /* operand */
