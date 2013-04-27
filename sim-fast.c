@@ -400,6 +400,8 @@ sim_main(void)
   /* set up initial default next PC */
   regs.regs_NPC = regs.regs_PC + sizeof(md_inst_t);
 
+  fprintf(stderr,"PC: %d\n", regs.regs_PC);
+
   while (TRUE)
     {
       /* maintain $r0 semantics */
@@ -421,6 +423,8 @@ sim_main(void)
 #else /* !TARGET_ALPHA */
       /* load instruction */
       MD_FETCH_INST(inst, mem, regs.regs_PC);
+
+      fprintf(stderr,"Inst: %d\n", inst);
 
       /* decode the instruction */
       MD_SET_OPCODE(op, inst);

@@ -201,6 +201,8 @@ void sim_uninit(void)
 /* start simulation, program loaded, processor precise state initialized */
 void sim_main(void)
 {
+    int cycle_count = 0;
+
     fprintf(stderr, "sim: ** starting *pipe* functional simulation **\n");
 
     /* must have natural byte/word ordering */
@@ -211,6 +213,9 @@ void sim_main(void)
     regs.regs_NPC = regs.regs_PC + sizeof(md_inst_t);
 
     while (TRUE) {
+        cycle_count++;
+        fprintf(stderr, "Cycle %d:\n", cycle_count);
+
         /* maintain $r0 semantics */
         regs.regs_R[MD_REG_ZERO] = 0;
 
@@ -219,8 +224,19 @@ void sim_main(void)
         sim_num_insn++;
 #endif /* !NO_INSN_COUNT */
 
-        /* TODO */
+        do_wb();
 
+        do_mem();
+
+        do_ex();
+
+        do_id();
+
+        do_if();
+
+        if (cycle_count == 20){
+            exit(0);
+        }
     }
 }
 
@@ -233,8 +249,14 @@ void do_if()
         fd.NPC = fd.PC + sizeof(md_inst_t);
     }
     fd.PC = fd.NPC;
+
+    fprintf(stderr,"PC: %d\n", fd.PC);
+
     MD_FETCH_INSTI(inst, mem, fd.PC);
+
     fd.inst = inst;
+
+    fprintf(stderr,"Inst: %d\n", fd.inst);
 }
 
 void do_id()
@@ -243,6 +265,15 @@ void do_id()
     MD_SET_OPCODE(de.opcode, de.inst);
 
     md_inst_t inst = de.inst;
+
+    if (de.opcode != 0){
+        fprintf(stderr,"opcode: %d\n", de.opcode);
+    }
+
+    if (de.opcode == 0){
+        return;
+    }
+
     /* execute the instruction */
     switch (de.opcode) {
 #define DEFINST(OP,MSK,NAME,OPFORM,RES,FLAGS,O1,O2,I1,I2,I3)		\
@@ -282,8 +313,17 @@ void do_ex()
     em.valE = 0;
     em.cond = 0;
 
+    if (em.opcode != 0){
+        fprintf(stderr,"opcode: %d\n", em.opcode);
+    }
+
+    if (em.opcode == 0){
+        return;
+    }
+
     md_inst_t inst = em.inst;
     /* execute the instruction */
+
     switch (em.opcode) {
 #define DEFINST(OP,MSK,NAME,OPFORM,RES,FLAGS,O1,O2,I1,I2,I3)		\
 	case OP:				     \

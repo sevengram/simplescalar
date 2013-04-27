@@ -315,6 +315,10 @@
 #define NOP_IMPL              \
   {                 \
   }
+#undef NOP_IMPL_PIPE
+#define NOP_IMPL_PIPE              \
+  {                 \
+  }
 DEFINST(NOP,    0x00,
   "nop",    "",
   IntALU,   F_ICOMP,
@@ -2257,6 +2261,11 @@ DEFINST(FSQRT_D,    0x97,
  */
 
 #define SYSCALL_IMPL              \
+  {                 \
+    SYSCALL(inst);              \
+  }
+#undef SYSCALL_IMPL_PIPE
+#define SYSCALL_IMPL_PIPE              \
   {                 \
     SYSCALL(inst);              \
   }
