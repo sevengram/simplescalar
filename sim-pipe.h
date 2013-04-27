@@ -29,6 +29,7 @@ struct idex_buf {
     struct port_t port;  /* operand */
     int valA;
     int valB;
+    int inStall;
 };
 
 /*define buffer between execute and memory stage*/

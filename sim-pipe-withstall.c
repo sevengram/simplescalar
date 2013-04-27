@@ -63,7 +63,7 @@ struct idex_buf de;
 struct exmem_buf em;
 struct memwb_buf mw;
 
-#define DNA          (-1)
+#define DNA          (0)
 
 /* general register dependence decoders */
 #define DGPR(N)      (N)
@@ -89,17 +89,6 @@ void sim_init(void)
     /* allocate and initialize memory space */
     mem = mem_create("mem");
     mem_init(mem);
-
-    /* initialize stage latches*/
-
-    /* IF/ID */
-
-    /* ID/EX */
-
-    /* EX/MEM */
-
-    /* MEM/WB */
-
 }
 
 /* load program into simulated state */
@@ -234,10 +223,6 @@ void sim_main(void)
         do_if();
 
         fprintf(stderr, "-----------------------------------------\n");
-
-        if (cycle_count == 30){
-            exit(0);
-        }
     }
 }
 
@@ -251,7 +236,7 @@ void do_if()
 
     MD_FETCH_INSTI(fd.inst, mem, fd.PC);
 
-    if (fd.inst.a != 0){
+    if (fd.inst.a != OP_NA) {
         fprintf(stderr, "[IF]  ");
         md_print_insn(fd.inst, fd.PC, stderr);
         fprintf(stderr, "\n");
@@ -259,16 +244,19 @@ void do_if()
         fprintf(stderr, "[IF]  Empty\n");
     }
 
-
-    fd.valP = fd.PC + sizeof(md_inst_t);
+    if (!de.inStall)
+        fd.valP = fd.PC + sizeof(md_inst_t);
 }
 
 void do_id()
 {
-    de.PC = fd.PC;
-    de.inst = fd.inst;
+    if (!de.inStall) {
+        de.PC = fd.PC;
+        de.inst = fd.inst;
+    }
 
-    if (de.inst.a != 0){
+    MD_SET_OPCODE(de.opcode, de.inst);
+    if (de.opcode != OP_NA) {
         fprintf(stderr, "[ID]  ");
         md_print_insn(de.inst, de.PC, stderr);
         fprintf(stderr, "\n");
@@ -276,8 +264,7 @@ void do_id()
         fprintf(stderr, "[ID]  Empty\n");
     }
 
-    MD_SET_OPCODE(de.opcode, de.inst);
-    if (de.opcode == OP_NA){
+    if (de.opcode == OP_NA) {
         return;
     }
 
@@ -298,9 +285,20 @@ void do_id()
         de.port.srcA = I1;     \
         de.port.srcB = I2;     \
         de.port.srcC = I3;     \
-        de.valA = GPR(I1);     \
-        de.valB = GPR(I2);     \
-	    break;
+        if ((de.port.srcA != DNA && \
+            (de.port.srcA == em.port.dstE || de.port.srcA == em.port.dstM   \
+            || de.port.srcA == mw.port.dstE || de.port.srcA == mw.port.dstM))   \
+            || (de.port.srcB != DNA &&  \
+            (de.port.srcB == em.port.dstE || de.port.srcB == em.port.dstM   \
+            || de.port.srcB == mw.port.dstE || de.port.srcB == mw.port.dstM))){ \
+                de.inStall = 1; \
+            }   \
+        else {  \
+            de.inStall = 0; \
+            de.valA = GPR(I1);\
+            de.valB = GPR(I2);\
+        }   \
+        break;
 #define DEFLINK(OP,MSK,NAME,MASK,SHIFT)	\
 	case OP:							\
 	    panic("attempted to execute a linking opcode");
@@ -313,17 +311,33 @@ void do_id()
 
 void do_ex()
 {
-    em.PC = de.PC;
-    em.inst = de.inst;
-    em.opcode = de.opcode;
-    em.flags = de.flags;
-    em.res = de.res;
-    em.port = de.port;
-    em.valA = de.valA;
-    em.valE = 0;
-    em.cond = 0;
+    if (!de.inStall) {
+        em.PC = de.PC;
+        em.inst = de.inst;
+        em.opcode = de.opcode;
+        em.flags = de.flags;
+        em.res = de.res;
+        em.port = de.port;
+        em.valA = de.valA;
+        em.valE = 0;
+        em.cond = 0;
+    } else {
+        em.PC = de.PC;
+        em.inst = de.inst;
+        em.opcode = OP_NA;
+        em.flags = 0;
+        em.res = FUClass_NA;
+        em.port.srcA = DNA;
+        em.port.srcB = DNA;
+        em.port.srcC = DNA;
+        em.port.dstE = DNA;
+        em.port.dstM = DNA;
+        em.valA = 0;
+        em.valE = 0;
+        em.cond = 0;
+    }
 
-    if (em.opcode != OP_NA){
+    if (em.opcode != OP_NA) {
         fprintf(stderr, "[EX]  ");
         md_print_insn(em.inst, em.PC, stderr);
         fprintf(stderr, "\n");
@@ -331,7 +345,7 @@ void do_ex()
         fprintf(stderr, "[EX]  Empty\n");
     }
 
-    if (em.opcode == OP_NA){
+    if (em.opcode == OP_NA) {
         return;
     }
 
@@ -365,7 +379,7 @@ void do_mem()
     mw.valE = em.valE;
     mw.valM = 0;
 
-    if (mw.opcode != OP_NA){
+    if (mw.opcode != OP_NA) {
         fprintf(stderr, "[MEM] ");
         md_print_insn(mw.inst, mw.PC, stderr);
         fprintf(stderr, "\n");
@@ -391,7 +405,7 @@ void do_mem()
 
 void do_wb()
 {
-    if (mw.opcode != OP_NA){
+    if (mw.opcode != OP_NA) {
         fprintf(stderr, "[WB]  ");
         md_print_insn(mw.inst, mw.PC, stderr);
         fprintf(stderr, "\n");
@@ -404,7 +418,7 @@ void do_wb()
     if (mw.port.dstM != DNA)
         SET_GPR(mw.port.dstM, mw.valM);
 
-    if (mw.opcode == SYSCALL){
+    if (mw.opcode == SYSCALL) {
         SYSCALL(mw.inst);
     }
 }

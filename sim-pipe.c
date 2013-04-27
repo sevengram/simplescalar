@@ -63,7 +63,7 @@ struct idex_buf de;
 struct exmem_buf em;
 struct memwb_buf mw;
 
-#define DNA          (-1)
+#define DNA          (0)
 
 /* general register dependence decoders */
 #define DGPR(N)      (N)
