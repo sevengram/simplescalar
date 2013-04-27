@@ -287,7 +287,7 @@ void do_ex()
     switch (em.opcode) {
 #define DEFINST(OP,MSK,NAME,OPFORM,RES,FLAGS,O1,O2,I1,I2,I3)		\
 	case OP:				     \
-        SYMCAT(OP,_IMPL_PIPE);  \
+        SYMCAT(OP,_IMPL);  \
         break;
 #define DEFLINK(OP,MSK,NAME,MASK,SHIFT)	\
 	case OP:							\

@@ -32,15 +32,15 @@
 		<Cursor position="14368" topLine="424" />
 	</File>
 	<File name="sim-fast.c" open="0" top="0" tabpos="0">
-		<Cursor position="11923" topLine="357" />
+		<Cursor position="13407" topLine="428" />
 	</File>
 	<File name="sim-outorder.c" open="0" top="0" tabpos="0">
 		<Cursor position="104546" topLine="3347" />
 	</File>
-	<File name="sim-pipe-withstall.c" open="1" top="1" tabpos="2">
+	<File name="sim-pipe-withstall.c" open="1" top="0" tabpos="2">
 		<Cursor position="9519" topLine="380" />
 	</File>
-	<File name="sim-pipe.c" open="1" top="0" tabpos="4">
+	<File name="sim-pipe.c" open="1" top="1" tabpos="4">
 		<Cursor position="6322" topLine="218" />
 	</File>
 	<File name="sim-pipe.h" open="1" top="0" tabpos="1">
@@ -61,7 +61,7 @@
 	<File name="target-pisa/pisa.def" open="0" top="0" tabpos="0">
 		<Cursor position="37967" topLine="1058" />
 	</File>
-	<File name="target-pisa/pisa.h" open="1" top="0" tabpos="5">
+	<File name="target-pisa/pisa.h" open="0" top="0" tabpos="5">
 		<Cursor position="5571" topLine="165" />
 	</File>
 	<File name="target-pisa/syscall.c" open="0" top="0" tabpos="0">
