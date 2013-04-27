@@ -13,6 +13,8 @@ sim-bpred
 sim-profile
 sim-cache
 sim-outorder
+sim-pipe
+sim-pipe-withstall
 */*.o
 */*.obj
 */core
