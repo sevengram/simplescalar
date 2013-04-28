@@ -222,8 +222,17 @@ void sim_main(void)
 
         do_if();
 
+        printRegs();
+
         fprintf(stderr, "-----------------------------------------\n");
     }
+}
+
+void printRegs()
+{
+        enum md_fault_type _fault;
+        fprintf(stderr, "r[2]=%d r[3]=%d r[4]=%d r[5]=%d r[6]=%d mem=%d\n",
+          GPR(2),GPR(3),GPR(4),GPR(5),GPR(6),READ_WORD(GPR(30)+16, _fault));
 }
 
 void do_if()
@@ -237,7 +246,7 @@ void do_if()
     MD_FETCH_INSTI(fd.inst, mem, fd.PC);
 
     if (fd.inst.a != OP_NA) {
-        fprintf(stderr, "[IF]  ");
+        fprintf(stderr, "[IF]  0x%x  ", fd.PC);
         md_print_insn(fd.inst, fd.PC, stderr);
         fprintf(stderr, "\n");
     } else {
@@ -257,7 +266,7 @@ void do_id()
 
     MD_SET_OPCODE(de.opcode, de.inst);
     if (de.opcode != OP_NA) {
-        fprintf(stderr, "[ID]  ");
+        fprintf(stderr, "[ID]  0x%x  ", de.PC);
         md_print_insn(de.inst, de.PC, stderr);
         fprintf(stderr, "\n");
     } else {
@@ -338,7 +347,7 @@ void do_ex()
     }
 
     if (em.opcode != OP_NA) {
-        fprintf(stderr, "[EX]  ");
+        fprintf(stderr, "[EX]  0x%x  ", em.PC);
         md_print_insn(em.inst, em.PC, stderr);
         fprintf(stderr, "\n");
     } else {
@@ -380,7 +389,7 @@ void do_mem()
     mw.valM = 0;
 
     if (mw.opcode != OP_NA) {
-        fprintf(stderr, "[MEM] ");
+        fprintf(stderr, "[MEM] 0x%x  ",mw.PC);
         md_print_insn(mw.inst, mw.PC, stderr);
         fprintf(stderr, "\n");
     } else {
@@ -406,7 +415,7 @@ void do_mem()
 void do_wb()
 {
     if (mw.opcode != OP_NA) {
-        fprintf(stderr, "[WB]  ");
+        fprintf(stderr, "[WB]  0x%x  ", mw.PC);
         md_print_insn(mw.inst, mw.PC, stderr);
         fprintf(stderr, "\n");
     } else {
