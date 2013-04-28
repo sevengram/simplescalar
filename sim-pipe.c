@@ -89,17 +89,6 @@ void sim_init(void)
     /* allocate and initialize memory space */
     mem = mem_create("mem");
     mem_init(mem);
-
-    /* initialize stage latches*/
-
-    /* IF/ID */
-
-    /* ID/EX */
-
-    /* EX/MEM */
-
-    /* MEM/WB */
-
 }
 
 /* load program into simulated state */
@@ -197,20 +186,30 @@ void sim_uninit(void)
 #define INC_INSN_CTR()  /* nada */
 #endif /* NO_INSN_COUNT */
 
+void printRegs()
+{
+    enum md_fault_type _fault;
+    fprintf(stderr, "r[2]=%d r[3]=%d r[4]=%d r[5]=%d r[6]=%d mem=%d\n",
+            GPR(2),GPR(3),GPR(4),GPR(5),GPR(6),READ_WORD(GPR(30)+16, _fault));
+}
 
 /* start simulation, program loaded, processor precise state initialized */
 void sim_main(void)
 {
+    int cycle_count = 0;
+
     fprintf(stderr, "sim: ** starting *pipe* functional simulation **\n");
 
     /* must have natural byte/word ordering */
     if (sim_swap_bytes || sim_swap_words)
         fatal("sim: *pipe* functional simulation cannot swap bytes or words");
 
-    /* set up initial default next PC */
-    regs.regs_NPC = regs.regs_PC + sizeof(md_inst_t);
+    fd.valP = regs.regs_PC;
 
     while (TRUE) {
+        cycle_count++;
+        fprintf(stderr, "[Cycle %d]-------------------------------\n", cycle_count);
+
         /* maintain $r0 semantics */
         regs.regs_R[MD_REG_ZERO] = 0;
 
@@ -219,48 +218,112 @@ void sim_main(void)
         sim_num_insn++;
 #endif /* !NO_INSN_COUNT */
 
-        /* TODO */
+        do_wb();
 
+        do_mem();
+
+        do_ex();
+
+        do_id();
+
+        do_if();
+
+        printRegs();
+
+        fprintf(stderr, "-----------------------------------------\n");
     }
 }
 
 void do_if()
 {
-    md_inst_t inst;
-    if (em.cond == 1) {
-        /* TODO */
-    } else {
-        fd.valP = fd.PC + sizeof(md_inst_t);
-    }
     fd.PC = fd.valP;
-    MD_FETCH_INSTI(inst, mem, fd.PC);
-    fd.inst = inst;
+    MD_FETCH_INSTI(fd.inst, mem, fd.PC);
+    MD_SET_OPCODE(fd.opcode, fd.inst);
+
+    if (fd.opcode != OP_NA) {
+        fprintf(stderr, "[IF]  0x%x  ", fd.PC);
+        md_print_insn(fd.inst, fd.PC, stderr);
+        fprintf(stderr, "\n");
+    } else {
+        fprintf(stderr, "[IF]  Empty\n");
+    }
+
+    fd.valP = fd.PC + sizeof(md_inst_t);
 }
 
 void do_id()
 {
-    de.inst = fd.inst;
-    MD_SET_OPCODE(de.opcode, de.inst);
+    enum md_fault_type _fault;
+
+    if (em.cond == 1) {
+        de.PC = fd.PC;
+        de.inst = fd.inst;
+        de.opcode = OP_NA;
+        de.flags = 0;
+        de.res = FUClass_NA;
+        de.port.srcA = DNA;
+        de.port.srcB = DNA;
+        de.port.srcC = DNA;
+        de.port.dstE = DNA;
+        de.port.dstM = DNA;
+        de.valA = 0;
+        de.valB = 0;
+    } else {
+        de.PC = fd.PC;
+        de.inst = fd.inst;
+        de.opcode = fd.opcode;
+    }
+
+    if (de.opcode != OP_NA) {
+        fprintf(stderr, "[ID]  0x%x  ", de.PC);
+        md_print_insn(de.inst, de.PC, stderr);
+        fprintf(stderr, "\n");
+    } else {
+        fprintf(stderr, "[ID]  Empty\n");
+    }
+
+    if (de.opcode == OP_NA) {
+        return;
+    }
 
     md_inst_t inst = de.inst;
+
     /* execute the instruction */
     switch (de.opcode) {
 #define DEFINST(OP,MSK,NAME,OPFORM,RES,FLAGS,O1,O2,I1,I2,I3)		\
 	case OP:				  \
-	    de.flags = FLAGS;     \
+        de.flags = FLAGS;     \
 	    de.res = RES;         \
         de.port.dstE = DNA;   \
         de.port.dstM = DNA;   \
 	    if (de.res == IntALU) \
-	        de.port.dstE = O1;     \
+            de.port.dstE = O1;     \
 	    else if (de.res == RdPort) \
 	        de.port.dstM = O1;     \
         de.port.srcA = I1;     \
         de.port.srcB = I2;     \
         de.port.srcC = I3;     \
-        de.valA = GPR(I1);     \
-        de.valB = GPR(I2);     \
-	    break;
+        if (de.port.srcA != DNA && de.port.srcA == em.port.dstE) \
+            de.valA = em.valE;  \
+        else if (de.port.srcA != DNA && de.port.srcA == em.port.dstM) \
+            de.valA = READ_WORD(em.valE, _fault);   \
+        else if (de.port.srcA != DNA && de.port.srcA == mw.port.dstE) \
+            de.valA = mw.valE;  \
+        else if (de.port.srcA != DNA && de.port.srcA == mw.port.dstM) \
+            de.valA = mw.valM;  \
+        else    \
+            de.valA = GPR(I1);  \
+        if (de.port.srcB != DNA && de.port.srcB == em.port.dstE) \
+            de.valB = em.valE;  \
+        else if (de.port.srcB != DNA && de.port.srcB == em.port.dstM)  \
+            de.valB = READ_WORD(em.valE, _fault);   \
+        else if (de.port.srcB != DNA && de.port.srcB == mw.port.dstE)  \
+            de.valB = mw.valE;  \
+        else if (de.port.srcB != DNA && de.port.srcB == mw.port.dstM)  \
+            de.valB = mw.valM;  \
+        else    \
+            de.valB = GPR(I2);  \
+        break;
 #define DEFLINK(OP,MSK,NAME,MASK,SHIFT)	\
 	case OP:							\
 	    panic("attempted to execute a linking opcode");
@@ -269,10 +332,17 @@ void do_id()
     default:
         panic("attempted to execute a bogus opcode");
     }
+
+    if (de.opcode == JUMP) {
+        SET_TPC((fd.PC & 036000000000) | (TARG << 2));
+        SET_NPC((fd.PC & 036000000000) | (TARG << 2));
+        fd.valP = regs.regs_NPC;
+    }
 }
 
 void do_ex()
 {
+    em.PC = de.PC;
     em.inst = de.inst;
     em.opcode = de.opcode;
     em.flags = de.flags;
@@ -282,12 +352,25 @@ void do_ex()
     em.valE = 0;
     em.cond = 0;
 
+    if (em.opcode != OP_NA) {
+        fprintf(stderr, "[EX]  0x%x  ", em.PC);
+        md_print_insn(em.inst, em.PC, stderr);
+        fprintf(stderr, "\n");
+    } else {
+        fprintf(stderr, "[EX]  Empty\n");
+    }
+
+    if (em.opcode == OP_NA) {
+        return;
+    }
+
     md_inst_t inst = em.inst;
     /* execute the instruction */
+
     switch (em.opcode) {
 #define DEFINST(OP,MSK,NAME,OPFORM,RES,FLAGS,O1,O2,I1,I2,I3)		\
 	case OP:				     \
-        SYMCAT(OP,_IMPL);  \
+        SYMCAT(OP,_IMPL_PIPE);  \
         break;
 #define DEFLINK(OP,MSK,NAME,MASK,SHIFT)	\
 	case OP:							\
@@ -302,12 +385,22 @@ void do_ex()
 void do_mem()
 {
     enum md_fault_type _fault;
+    mw.opcode = em.opcode;
+    mw.PC = em.PC;
     mw.inst = em.inst;
     mw.flags = em.flags;
     mw.res = em.res;
     mw.port = em.port;
     mw.valE = em.valE;
     mw.valM = 0;
+
+    if (mw.opcode != OP_NA) {
+        fprintf(stderr, "[MEM] 0x%x  ",mw.PC);
+        md_print_insn(mw.inst, mw.PC, stderr);
+        fprintf(stderr, "\n");
+    } else {
+        fprintf(stderr, "[MEM] Empty\n");
+    }
 
     switch (mw.res) {
     case WrPort:
@@ -327,8 +420,20 @@ void do_mem()
 
 void do_wb()
 {
+    if (mw.opcode != OP_NA) {
+        fprintf(stderr, "[WB]  0x%x  ", mw.PC);
+        md_print_insn(mw.inst, mw.PC, stderr);
+        fprintf(stderr, "\n");
+    } else {
+        fprintf(stderr, "[WB]  Empty\n");
+    }
+
     if (mw.port.dstE != DNA)
         SET_GPR(mw.port.dstE, mw.valE);
     if (mw.port.dstM != DNA)
         SET_GPR(mw.port.dstM, mw.valM);
+
+    if (mw.opcode == SYSCALL) {
+        SYSCALL(mw.inst);
+    }
 }

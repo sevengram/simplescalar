@@ -17,6 +17,8 @@ struct ifid_buf {
     md_inst_t inst;   /* instruction that has been fetched */
     md_addr_t PC;     /* pc value of current instruction */
     md_addr_t valP;    /* the next instruction to fetch */
+    enum md_opcode opcode; /* operation number */
+    int inStall;
 };
 
 /*define buffer between decode and execute stage*/

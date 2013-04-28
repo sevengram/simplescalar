@@ -186,6 +186,12 @@ void sim_uninit(void)
 #define INC_INSN_CTR()  /* nada */
 #endif /* NO_INSN_COUNT */
 
+void printRegs()
+{
+    enum md_fault_type _fault;
+    fprintf(stderr, "r[2]=%d r[3]=%d r[4]=%d r[5]=%d r[6]=%d mem=%d\n",
+            GPR(2),GPR(3),GPR(4),GPR(5),GPR(6),READ_WORD(GPR(30)+16, _fault));
+}
 
 /* start simulation, program loaded, processor precise state initialized */
 void sim_main(void)
@@ -228,20 +234,16 @@ void sim_main(void)
     }
 }
 
-void printRegs()
-{
-        enum md_fault_type _fault;
-        fprintf(stderr, "r[2]=%d r[3]=%d r[4]=%d r[5]=%d r[6]=%d mem=%d\n",
-            GPR(2),GPR(3),GPR(4),GPR(5),GPR(6),READ_WORD(GPR(30)+16, _fault));
-}
-
 void do_if()
 {
     fd.PC = fd.valP;
-
     MD_FETCH_INSTI(fd.inst, mem, fd.PC);
+    if (!fd.inStall)
+        MD_SET_OPCODE(fd.opcode, fd.inst);
+    else
+        fd.opcode = OP_NA;
 
-    if (fd.inst.a != OP_NA) {
+    if (fd.opcode != OP_NA) {
         fprintf(stderr, "[IF]  0x%x  ", fd.PC);
         md_print_insn(fd.inst, fd.PC, stderr);
         fprintf(stderr, "\n");
@@ -249,32 +251,19 @@ void do_if()
         fprintf(stderr, "[IF]  Empty\n");
     }
 
-    if (!de.inStall)
-       fd.valP = fd.PC + sizeof(md_inst_t);
+    if (!de.inStall && !fd.inStall)
+        fd.valP = fd.PC + sizeof(md_inst_t);
+    if (fd.inStall){
+        fd.inStall = 0;
+    }
 }
 
 void do_id()
 {
-    if (em.cond == 1) {
+    if (!de.inStall) {
         de.PC = fd.PC;
         de.inst = fd.inst;
-        de.opcode = OP_NA;
-        de.flags = 0;
-        de.res = FUClass_NA;
-        de.port.srcA = DNA;
-        de.port.srcB = DNA;
-        de.port.srcC = DNA;
-        de.port.dstE = DNA;
-        de.port.dstM = DNA;
-        de.valA = 0;
-        de.valB = 0;
-        de.inStall = 0;
-    } else {
-        if (!de.inStall) {
-           de.PC = fd.PC;
-           de.inst = fd.inst;
-        }
-        MD_SET_OPCODE(de.opcode, de.inst);
+        de.opcode = fd.opcode;
     }
 
     if (de.opcode != OP_NA) {
@@ -329,10 +318,14 @@ void do_id()
         panic("attempted to execute a bogus opcode");
     }
 
-    if (de.opcode == JUMP){
-        SET_TPC((fd.PC & 036000000000) | (TARG << 2));      
-        SET_NPC((fd.PC & 036000000000) | (TARG << 2));      
+    if (de.opcode == JUMP) {
+        SET_TPC((fd.PC & 036000000000) | (TARG << 2));
+        SET_NPC((fd.PC & 036000000000) | (TARG << 2));
         fd.valP = regs.regs_NPC;
+    }
+
+    if (de.flags & F_COND){
+        fd.inStall = 1;
     }
 }
 
