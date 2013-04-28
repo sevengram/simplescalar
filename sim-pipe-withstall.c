@@ -232,16 +232,12 @@ void printRegs()
 {
         enum md_fault_type _fault;
         fprintf(stderr, "r[2]=%d r[3]=%d r[4]=%d r[5]=%d r[6]=%d mem=%d\n",
-          GPR(2),GPR(3),GPR(4),GPR(5),GPR(6),READ_WORD(GPR(30)+16, _fault));
+            GPR(2),GPR(3),GPR(4),GPR(5),GPR(6),READ_WORD(GPR(30)+16, _fault));
 }
 
 void do_if()
 {
-    if (em.cond == 1) {
-        /* TODO */
-    } else {
-        fd.PC = fd.valP;
-    }
+    fd.PC = fd.valP;
 
     MD_FETCH_INSTI(fd.inst, mem, fd.PC);
 
@@ -254,17 +250,33 @@ void do_if()
     }
 
     if (!de.inStall)
-        fd.valP = fd.PC + sizeof(md_inst_t);
+       fd.valP = fd.PC + sizeof(md_inst_t);
 }
 
 void do_id()
 {
-    if (!de.inStall) {
+    if (em.cond == 1) {
         de.PC = fd.PC;
         de.inst = fd.inst;
+        de.opcode = OP_NA;
+        de.flags = 0;
+        de.res = FUClass_NA;
+        de.port.srcA = DNA;
+        de.port.srcB = DNA;
+        de.port.srcC = DNA;
+        de.port.dstE = DNA;
+        de.port.dstM = DNA;
+        de.valA = 0;
+        de.valB = 0;
+        de.inStall = 0;
+    } else {
+        if (!de.inStall) {
+           de.PC = fd.PC;
+           de.inst = fd.inst;
+        }
+        MD_SET_OPCODE(de.opcode, de.inst);
     }
 
-    MD_SET_OPCODE(de.opcode, de.inst);
     if (de.opcode != OP_NA) {
         fprintf(stderr, "[ID]  0x%x  ", de.PC);
         md_print_insn(de.inst, de.PC, stderr);
@@ -283,14 +295,14 @@ void do_id()
     switch (de.opcode) {
 #define DEFINST(OP,MSK,NAME,OPFORM,RES,FLAGS,O1,O2,I1,I2,I3)		\
 	case OP:				  \
-	    de.flags = FLAGS;     \
-	    de.res = RES;         \
+        de.flags = FLAGS;     \
+	de.res = RES;         \
         de.port.dstE = DNA;   \
         de.port.dstM = DNA;   \
-	    if (de.res == IntALU) \
-	        de.port.dstE = O1;     \
-	    else if (de.res == RdPort) \
-	        de.port.dstM = O1;     \
+	if (de.res == IntALU) \
+	   de.port.dstE = O1;     \
+	else if (de.res == RdPort) \
+	   de.port.dstM = O1;     \
         de.port.srcA = I1;     \
         de.port.srcB = I2;     \
         de.port.srcC = I3;     \
@@ -315,6 +327,12 @@ void do_id()
 #include "machine.def"
     default:
         panic("attempted to execute a bogus opcode");
+    }
+
+    if (de.opcode == JUMP){
+        SET_TPC((fd.PC & 036000000000) | (TARG << 2));      
+        SET_NPC((fd.PC & 036000000000) | (TARG << 2));      
+        fd.valP = regs.regs_NPC;
     }
 }
 

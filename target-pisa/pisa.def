@@ -333,6 +333,10 @@ DEFINST(NOP,    0x00,
     SET_TPC((CPC & 036000000000) | (TARG << 2));      \
     SET_NPC((CPC & 036000000000) | (TARG << 2));      \
   }
+#undef JUMP_IMPL_PIPE
+#define JUMP_IMPL_PIPE             \
+  {                 \
+  }
 DEFINST(JUMP,     0x01,
   "j",      "J",
   NA,       F_CTRL|F_UNCOND|F_DIRJMP,
@@ -382,6 +386,7 @@ DEFINST(JALR,     0x04,
     if (GPR(RS) == GPR(RT))           \
       SET_NPC(CPC + 8 + (OFS << 2));          \
   }
+
 DEFINST(BEQ,      0x05,
   "beq",      "s,t,j",
   IntALU,     F_CTRL|F_COND|F_DIRJMP,
@@ -392,6 +397,16 @@ DEFINST(BEQ,      0x05,
     SET_TPC(CPC + 8 + (OFS << 2));          \
     if (GPR(RS) != GPR(RT))           \
       SET_NPC(CPC + 8 + (OFS << 2));          \
+  }
+#undef BNE_IMPL_PIPE
+#define BNE_IMPL_PIPE \
+  {                \
+    SET_TPC(de.PC + 8 + (OFS << 2));          \
+    if (de.valA != de.valB){           \
+      SET_NPC(de.PC + 8 + (OFS << 2));          \
+      fd.valP = regs.regs_NPC;        \
+      em.cond = 1;                    \
+    }                                \
   }
 DEFINST(BNE,      0x06,
   "bne",      "s,t,j",
@@ -1659,6 +1674,11 @@ DEFINST(ANDI,     0x4f,
   {                 \
     SET_GPR(RD, GPR(RS) | GPR(RT));         \
   }
+#undef OR_IMPL_PIPE
+#define OR_IMPL_PIPE             \
+  {                 \
+    em.valE = de.valA | de.valB;  \
+  }
 DEFINST(OR,       0x50,
   "or",       "d,s,t",
   IntALU,     F_ICOMP,
@@ -1667,6 +1687,11 @@ DEFINST(OR,       0x50,
 #define ORI_IMPL              \
   {                 \
     SET_GPR(RT, GPR(RS) | UIMM);          \
+  }
+#undef ORI_IMPL_PIPE
+#define ORI_IMPL_PIPE             \
+  {                 \
+    em.valE = de.valA | UIMM;  \
   }
 DEFINST(ORI,      0x51,
   "ori",      "t,s,u",
