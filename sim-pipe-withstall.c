@@ -28,14 +28,14 @@ static struct mem_t *mem = NULL;
 void sim_reg_options(struct opt_odb_t *odb)
 {
     opt_reg_header(odb,
-                   "sim-pipe: This simulator implements based on sim-fast.\n");
+                   "sim-pipe-withstall: This simulator implements based on sim-fast.\n");
 }
 
 /* check simulator-specific option values */
 void sim_check_options(struct opt_odb_t *odb, int argc, char **argv)
 {
     if (dlite_active)
-        fatal("sim-pipe does not support DLite debugging");
+        fatal("sim-pipe-withstall does not support DLite debugging");
 }
 
 /* register simulator-specific statistics */
