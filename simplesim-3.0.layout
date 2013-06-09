@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Release" />
+	<File name="bitmap.h" open="0" top="0" tabpos="0">
+		<Cursor position="0" topLine="57" />
+	</File>
 	<File name="bpred.c" open="0" top="0" tabpos="0">
 		<Cursor position="3551" topLine="68" />
 	</File>
@@ -10,26 +13,41 @@
 	<File name="cache.h" open="0" top="0" tabpos="0">
 		<Cursor position="0" topLine="276" />
 	</File>
+	<File name="dlite.h" open="0" top="0" tabpos="0">
+		<Cursor position="7148" topLine="165" />
+	</File>
 	<File name="endian.h" open="0" top="0" tabpos="0">
 		<Cursor position="2772" topLine="45" />
 	</File>
+	<File name="eval.h" open="0" top="0" tabpos="0">
+		<Cursor position="0" topLine="42" />
+	</File>
 	<File name="host.h" open="0" top="0" tabpos="0">
-		<Cursor position="3569" topLine="75" />
+		<Cursor position="3357" topLine="70" />
+	</File>
+	<File name="loader.h" open="0" top="0" tabpos="0">
+		<Cursor position="4983" topLine="125" />
 	</File>
 	<File name="machine.def" open="0" top="0" tabpos="3">
-		<Cursor position="4400" topLine="1190" />
+		<Cursor position="32014" topLine="908" />
 	</File>
 	<File name="machine.h" open="0" top="0" tabpos="0">
-		<Cursor position="6276" topLine="197" />
+		<Cursor position="6276" topLine="727" />
+	</File>
+	<File name="main.c" open="0" top="0" tabpos="0">
+		<Cursor position="6257" topLine="202" />
 	</File>
 	<File name="memory.h" open="0" top="0" tabpos="0">
-		<Cursor position="6986" topLine="163" />
+		<Cursor position="11901" topLine="0" />
+	</File>
+	<File name="misc.h" open="0" top="0" tabpos="0">
+		<Cursor position="2767" topLine="53" />
 	</File>
 	<File name="resource.c" open="0" top="0" tabpos="0">
 		<Cursor position="3749" topLine="86" />
 	</File>
 	<File name="sim-bpred.c" open="0" top="0" tabpos="3">
-		<Cursor position="13520" topLine="405" />
+		<Cursor position="14019" topLine="416" />
 	</File>
 	<File name="sim-fast.c" open="0" top="0" tabpos="4">
 		<Cursor position="13407" topLine="362" />
@@ -37,35 +55,44 @@
 	<File name="sim-outorder.c" open="0" top="0" tabpos="0">
 		<Cursor position="104412" topLine="3342" />
 	</File>
-	<File name="sim-pipe-cache.c" open="1" top="0" tabpos="0">
-		<Cursor position="0" topLine="0" />
+	<File name="sim-pipe-cache.c" open="0" top="0" tabpos="1">
+		<Cursor position="13144" topLine="426" />
+	</File>
+	<File name="sim-pipe-cache.h" open="0" top="0" tabpos="0">
+		<Cursor position="440" topLine="0" />
 	</File>
 	<File name="sim-pipe-withstall.c" open="0" top="0" tabpos="2">
 		<Cursor position="8972" topLine="336" />
 	</File>
 	<File name="sim-pipe.c" open="0" top="0" tabpos="2">
-		<Cursor position="11131" topLine="195" />
+		<Cursor position="5578" topLine="231" />
 	</File>
-	<File name="sim-pipe.h" open="1" top="0" tabpos="1">
-		<Cursor position="156" topLine="0" />
+	<File name="sim-pipe.h" open="0" top="0" tabpos="3">
+		<Cursor position="1979" topLine="62" />
 	</File>
 	<File name="sim-safe.c" open="0" top="0" tabpos="0">
 		<Cursor position="10440" topLine="310" />
 	</File>
 	<File name="sim.h" open="0" top="0" tabpos="0">
-		<Cursor position="2564" topLine="38" />
+		<Cursor position="4504" topLine="116" />
+	</File>
+	<File name="stats.c" open="0" top="0" tabpos="0">
+		<Cursor position="27012" topLine="962" />
 	</File>
 	<File name="syscall.h" open="0" top="0" tabpos="0">
 		<Cursor position="4039" topLine="74" />
 	</File>
+	<File name="target-pisa/loader.c" open="0" top="0" tabpos="0">
+		<Cursor position="3946" topLine="138" />
+	</File>
 	<File name="target-pisa/pisa.c" open="0" top="0" tabpos="0">
-		<Cursor position="14546" topLine="0" />
+		<Cursor position="14546" topLine="603" />
 	</File>
 	<File name="target-pisa/pisa.def" open="0" top="0" tabpos="1">
 		<Cursor position="19255" topLine="554" />
 	</File>
 	<File name="target-pisa/pisa.h" open="0" top="0" tabpos="5">
-		<Cursor position="3862" topLine="103" />
+		<Cursor position="21728" topLine="665" />
 	</File>
 	<File name="target-pisa/syscall.c" open="0" top="0" tabpos="0">
 		<Cursor position="16327" topLine="650" />

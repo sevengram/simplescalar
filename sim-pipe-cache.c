@@ -19,6 +19,8 @@
 #include "sim-pipe.h"
 #include "sim-pipe-cache.h"
 
+#define USE_CACHE
+
 /* simulated registers */
 static struct regs_t regs;
 
@@ -64,7 +66,7 @@ struct idex_buf de;
 struct exmem_buf em;
 struct memwb_buf mw;
 
-struct cache_line cache[16];
+struct cache_set c_set[16];
 
 #define DNA          (0)
 
@@ -189,19 +191,10 @@ void sim_uninit(void)
 #define INC_INSN_CTR()  /* nada */
 #endif /* NO_INSN_COUNT */
 
-void printRegs()
-{
-    enum md_fault_type _fault;
-    fprintf(stderr, "r[8]=%d r[9]=%d r[10]=%d mem=%d\n",
-            GPR(8),GPR(9),GPR(10),READ_WORD(GPR(22), _fault));
-}
-
 /* start simulation, program loaded, processor precise state initialized */
 void sim_main(void)
 {
-    int cycle_count = 0;
-
-    fprintf(stderr, "sim: ** starting *pipe* functional simulation **\n");
+    fprintf(stderr, "sim: ** starting *pipe-cache* functional simulation **\n");
 
     /* must have natural byte/word ordering */
     if (sim_swap_bytes || sim_swap_words)
@@ -211,7 +204,6 @@ void sim_main(void)
 
     while (TRUE) {
         cycle_count++;
-        fprintf(stderr, "[Cycle %d]-------------------------------\n", cycle_count);
 
         /* maintain $r0 semantics */
         regs.regs_R[MD_REG_ZERO] = 0;
@@ -230,10 +222,6 @@ void sim_main(void)
         do_id();
 
         do_if();
-
-        printRegs();
-
-        fprintf(stderr, "-----------------------------------------\n");
     }
 }
 
@@ -242,14 +230,6 @@ void do_if()
     fd.PC = fd.valP;
     MD_FETCH_INSTI(fd.inst, mem, fd.PC);
     MD_SET_OPCODE(fd.opcode, fd.inst);
-
-    if (fd.opcode != OP_NA) {
-        fprintf(stderr, "[IF]  0x%x  ", fd.PC);
-        md_print_insn(fd.inst, fd.PC, stderr);
-        fprintf(stderr, "\n");
-    } else {
-        fprintf(stderr, "[IF]  Empty\n");
-    }
 
     fd.valP = fd.PC + sizeof(md_inst_t);
 }
@@ -275,14 +255,6 @@ void do_id()
         de.PC = fd.PC;
         de.inst = fd.inst;
         de.opcode = fd.opcode;
-    }
-
-    if (de.opcode != OP_NA) {
-        fprintf(stderr, "[ID]  0x%x  ", de.PC);
-        md_print_insn(de.inst, de.PC, stderr);
-        fprintf(stderr, "\n");
-    } else {
-        fprintf(stderr, "[ID]  Empty\n");
     }
 
     if (de.opcode == OP_NA) {
@@ -355,14 +327,6 @@ void do_ex()
     em.valE = 0;
     em.cond = 0;
 
-    if (em.opcode != OP_NA) {
-        fprintf(stderr, "[EX]  0x%x  ", em.PC);
-        md_print_insn(em.inst, em.PC, stderr);
-        fprintf(stderr, "\n");
-    } else {
-        fprintf(stderr, "[EX]  Empty\n");
-    }
-
     if (em.opcode == OP_NA) {
         return;
     }
@@ -397,24 +361,12 @@ void do_mem()
     mw.valE = em.valE;
     mw.valM = 0;
 
-    if (mw.opcode != OP_NA) {
-        fprintf(stderr, "[MEM] 0x%x  ",mw.PC);
-        md_print_insn(mw.inst, mw.PC, stderr);
-        fprintf(stderr, "\n");
-    } else {
-        fprintf(stderr, "[MEM] Empty\n");
-    }
-
     switch (mw.res) {
     case WrPort:
-        WRITE_WORD((word_t)em.valA, em.valE, _fault);
-        if (_fault != md_fault_none)
-            DECLARE_FAULT(_fault);
+        write_word((word_t)em.valA, em.valE);
         break;
     case RdPort:
-        mw.valM = READ_WORD(em.valE, _fault);
-        if (_fault != md_fault_none)
-            DECLARE_FAULT(_fault);
+        mw.valM = read_word(em.valE);
         break;
     default:
         break;
@@ -423,14 +375,6 @@ void do_mem()
 
 void do_wb()
 {
-    if (mw.opcode != OP_NA) {
-        fprintf(stderr, "[WB]  0x%x  ", mw.PC);
-        md_print_insn(mw.inst, mw.PC, stderr);
-        fprintf(stderr, "\n");
-    } else {
-        fprintf(stderr, "[WB]  Empty\n");
-    }
-
     if (mw.port.dstE != DNA)
         SET_GPR(mw.port.dstE, mw.valE);
     if (mw.port.dstM != DNA)
@@ -439,4 +383,126 @@ void do_wb()
     if (mw.opcode == SYSCALL) {
         SYSCALL(mw.inst);
     }
+}
+
+void write_back(struct cache_line* line, int index)
+{
+    int i;
+    enum md_fault_type _fault;
+    md_addr_t base_addr = GET_BASE(line->tag, index);
+    for (i = 0; i < 4; i++) {
+        WRITE_WORD(line->data[i], base_addr + 4 * i, _fault);
+        if (_fault != md_fault_none) {
+            fprintf(stderr, "WRITE_WORD error: %d\n", _fault);
+            DECLARE_FAULT(_fault);
+        }
+    }
+    line->dirty = 0;
+}
+
+void cache_load(md_addr_t base_addr)
+{
+    int i;
+    int index = GET_SET(base_addr);
+    enum md_fault_type _fault;
+    READ_WORD(base_addr + 4 * i, _fault);
+    int pos = (c_set[index].cur_pos++) % 4;
+    if (c_set[index].c_line[pos].valid) {
+        cache_replace_count++;
+        if (c_set[index].c_line[pos].dirty) {
+            write_back(&c_set[index].c_line[pos], index);
+            cache_wb_count++;
+        }
+    }
+    c_set[index].c_line[pos].tag = GET_TAG(base_addr);
+    c_set[index].c_line[pos].dirty = 0;
+    c_set[index].c_line[pos].valid = 1;
+    for (i = 0; i < 4; i++) {
+        c_set[index].c_line[pos].data[i] = READ_WORD(base_addr + 4 * i, _fault);
+        if (_fault != md_fault_none) {
+            fprintf(stderr, "READ_WORD error: %d\n", _fault);
+            DECLARE_FAULT(_fault);
+        }
+    }
+}
+
+bool_t read_cache(word_t *result, md_addr_t addr)
+{
+    int i;
+    int index = GET_SET(addr);
+    int tag = GET_TAG(addr);
+    for (i = 0; i < 4; i++) {
+        if (c_set[index].c_line[i].valid && c_set[index].c_line[i].tag == tag) {
+            *result = c_set[index].c_line[i].data[GET_OFFSET(addr)];
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+bool_t write_cache(word_t data, md_addr_t addr)
+{
+    int i;
+    int index = GET_SET(addr);
+    int tag = GET_TAG(addr);
+    for (i = 0; i < 4; i++) {
+        if (c_set[index].c_line[i].valid && c_set[index].c_line[i].tag == tag) {
+            c_set[index].c_line[i].data[GET_OFFSET(addr)] = data;
+            c_set[index].c_line[i].dirty = 1;
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+word_t read_word(md_addr_t addr)
+{
+    word_t result;
+    enum md_fault_type _fault;
+#ifdef USE_CACHE
+    if (read_cache(&result, addr)) {
+        cache_hit_count++;
+        return result;
+    } else {
+        cycle_count += 9;
+        cache_miss_count++;
+        mem_access_count++;
+        result = READ_WORD(addr, _fault);
+        if (_fault != md_fault_none)
+            fprintf(stderr, "READ_WORD error: %d\n", _fault);
+        cache_load(GET_BASEADDR(addr));
+        return result;
+    }
+#else
+    cycle_count += 9;
+    mem_access_count++;
+    result = READ_WORD(addr, _fault);
+    if (_fault != md_fault_none)
+        fprintf(stderr, "READ_WORD error: %d\n", _fault);
+    return result;
+#endif
+}
+
+void write_word(word_t data, md_addr_t addr)
+{
+    enum md_fault_type _fault;
+#ifdef USE_CACHE
+    if (!write_cache(data, addr)) {
+        cycle_count += 9;
+        cache_miss_count++;
+        mem_access_count++;
+        WRITE_WORD(data, addr, _fault);
+        if (_fault != md_fault_none)
+            fprintf(stderr, "WRITE_WORD error: %d\n", _fault);
+        cache_load(GET_BASEADDR(addr));
+    } else {
+        cache_hit_count++;
+    }
+#else
+    cycle_count += 9;
+    mem_access_count++;
+    WRITE_WORD(data, addr, _fault);
+    if (_fault != md_fault_none)
+        fprintf(stderr, "WRITE_WORD error: %d\n", _fault);
+#endif
 }

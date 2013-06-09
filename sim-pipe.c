@@ -189,8 +189,8 @@ void sim_uninit(void)
 void printRegs()
 {
     enum md_fault_type _fault;
-    fprintf(stderr, "r[8]=%d r[9]=%d r[10]=%d mem=%d\n",
-            GPR(8),GPR(9),GPR(10),READ_WORD(GPR(22), _fault));
+    fprintf(stderr, "r[2]=%d r[3]=%d r[4]=%d r[5]=%d r[6]=%d mem=%d\n",
+            GPR(2),GPR(3),GPR(4),GPR(5),GPR(6),READ_WORD(GPR(30)+16, _fault));
 }
 
 /* start simulation, program loaded, processor precise state initialized */
