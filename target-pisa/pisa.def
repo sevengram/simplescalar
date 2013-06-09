@@ -320,9 +320,9 @@
   {                 \
   }
 DEFINST(NOP,    0x00,
-  "nop",    "",
-  IntALU,   F_ICOMP,
-  DNA, DNA, DNA, DNA, DNA)
+        "nop",    "",
+        IntALU,   F_ICOMP,
+        DNA, DNA, DNA, DNA, DNA)
 
 /*
  * control operations
@@ -338,9 +338,9 @@ DEFINST(NOP,    0x00,
   {                 \
   }
 DEFINST(JUMP,     0x01,
-  "j",      "J",
-  NA,       F_CTRL|F_UNCOND|F_DIRJMP,
-  DNA, DNA,     DNA, DNA, DNA)
+        "j",      "J",
+        NA,       F_CTRL|F_UNCOND|F_DIRJMP,
+        DNA, DNA,     DNA, DNA, DNA)
 
 #define JAL_IMPL              \
   {                 \
@@ -349,9 +349,9 @@ DEFINST(JUMP,     0x01,
     SET_GPR(31, CPC + 8);           \
   }
 DEFINST(JAL,      0x02,
-  "jal",      "J",
-  IntALU,     F_CTRL|F_UNCOND|F_DIRJMP|F_CALL,
-  DGPR(31), DNA,    DNA, DNA, DNA)
+        "jal",      "J",
+        IntALU,     F_CTRL|F_UNCOND|F_DIRJMP|F_CALL,
+        DGPR(31), DNA,    DNA, DNA, DNA)
 
 #define JR_IMPL               \
   {                 \
@@ -362,9 +362,9 @@ DEFINST(JAL,      0x02,
     SET_NPC(GPR(RS));             \
   }
 DEFINST(JR,       0x03,
-  "jr",       "s",
-  NA,       F_CTRL|F_UNCOND|F_INDIRJMP,
-  DNA, DNA,   DGPR(RS), DNA, DNA)
+        "jr",       "s",
+        NA,       F_CTRL|F_UNCOND|F_INDIRJMP,
+        DNA, DNA,   DGPR(RS), DNA, DNA)
 
 #define JALR_IMPL             \
   {                 \
@@ -376,9 +376,9 @@ DEFINST(JR,       0x03,
     SET_NPC(GPR(RS));             \
   }
 DEFINST(JALR,     0x04,
-  "jalr",     "d,s",
-  IntALU,     F_CTRL|F_UNCOND|F_INDIRJMP|F_CALL,
-  DGPR(RD), DNA,    DGPR(RS), DNA, DNA)
+        "jalr",     "d,s",
+        IntALU,     F_CTRL|F_UNCOND|F_INDIRJMP|F_CALL,
+        DGPR(RD), DNA,    DGPR(RS), DNA, DNA)
 
 #define BEQ_IMPL              \
   {                 \
@@ -386,11 +386,20 @@ DEFINST(JALR,     0x04,
     if (GPR(RS) == GPR(RT))           \
       SET_NPC(CPC + 8 + (OFS << 2));          \
   }
-
+#undef BEQ_IMPL_PIPE
+#define BEQ_IMPL_PIPE \
+  {                \
+    SET_TPC(de.PC + 8 + (OFS << 2));          \
+    if (de.valA == de.valB){           \
+      SET_NPC(de.PC + 8 + (OFS << 2));          \
+      fd.valP = regs.regs_NPC;        \
+      em.cond = 1;                    \
+    }                                \
+  }
 DEFINST(BEQ,      0x05,
-  "beq",      "s,t,j",
-  IntALU,     F_CTRL|F_COND|F_DIRJMP,
-  DNA, DNA,   DGPR(RS), DGPR(RT), DNA)
+        "beq",      "s,t,j",
+        IntALU,     F_CTRL|F_COND|F_DIRJMP,
+        DNA, DNA,   DGPR(RS), DGPR(RT), DNA)
 
 #define BNE_IMPL              \
   {                 \
@@ -409,9 +418,9 @@ DEFINST(BEQ,      0x05,
     }                                \
   }
 DEFINST(BNE,      0x06,
-  "bne",      "s,t,j",
-  IntALU,     F_CTRL|F_COND|F_DIRJMP,
-  DNA, DNA,   DGPR(RS), DGPR(RT), DNA)
+        "bne",      "s,t,j",
+        IntALU,     F_CTRL|F_COND|F_DIRJMP,
+        DNA, DNA,   DGPR(RS), DGPR(RT), DNA)
 
 #define BLEZ_IMPL             \
   {                 \
@@ -420,9 +429,9 @@ DEFINST(BNE,      0x06,
       SET_NPC(CPC + 8 + (OFS << 2));          \
   }
 DEFINST(BLEZ,     0x07,
-  "blez",     "s,j",
-  IntALU,     F_CTRL|F_COND|F_DIRJMP,
-  DNA, DNA,   DGPR(RS), DNA, DNA)
+        "blez",     "s,j",
+        IntALU,     F_CTRL|F_COND|F_DIRJMP,
+        DNA, DNA,   DGPR(RS), DNA, DNA)
 
 #define BGTZ_IMPL             \
   {                 \
@@ -431,9 +440,9 @@ DEFINST(BLEZ,     0x07,
       SET_NPC(CPC + 8 + (OFS << 2));          \
   }
 DEFINST(BGTZ,     0x08,
-  "bgtz",     "s,j",
-  IntALU,     F_CTRL|F_COND|F_DIRJMP,
-  DNA, DNA,   DGPR(RS), DNA, DNA)
+        "bgtz",     "s,j",
+        IntALU,     F_CTRL|F_COND|F_DIRJMP,
+        DNA, DNA,   DGPR(RS), DNA, DNA)
 
 #define BLTZ_IMPL             \
   {                 \
@@ -442,9 +451,9 @@ DEFINST(BGTZ,     0x08,
       SET_NPC(CPC + 8 + (OFS << 2));          \
   }
 DEFINST(BLTZ,     0x09,
-  "bltz",     "s,j",
-  IntALU,     F_CTRL|F_COND|F_DIRJMP,
-  DNA, DNA,   DGPR(RS), DNA, DNA)
+        "bltz",     "s,j",
+        IntALU,     F_CTRL|F_COND|F_DIRJMP,
+        DNA, DNA,   DGPR(RS), DNA, DNA)
 
 #define BGEZ_IMPL             \
   {                 \
@@ -453,9 +462,9 @@ DEFINST(BLTZ,     0x09,
       SET_NPC(CPC + 8 + (OFS << 2));          \
   }
 DEFINST(BGEZ,       0x0a,
-  "bgez",     "s,j",
-  IntALU,     F_CTRL|F_COND|F_DIRJMP,
-  DNA, DNA,   DGPR(RS), DNA, DNA)
+        "bgez",     "s,j",
+        IntALU,     F_CTRL|F_COND|F_DIRJMP,
+        DNA, DNA,   DGPR(RS), DNA, DNA)
 
 #define BC1F_IMPL             \
   {                 \
@@ -464,9 +473,9 @@ DEFINST(BGEZ,       0x0a,
       SET_NPC(CPC + 8 + (OFS << 2));          \
   }
 DEFINST(BC1F,       0x0b,
-  "bc1f",     "j",
-  IntALU,     F_CTRL|F_COND|F_DIRJMP|F_FPCOND,
-  DNA, DNA,   DFCC, DNA, DNA)
+        "bc1f",     "j",
+        IntALU,     F_CTRL|F_COND|F_DIRJMP|F_FPCOND,
+        DNA, DNA,   DFCC, DNA, DNA)
 
 #define BC1T_IMPL             \
   {                 \
@@ -475,9 +484,9 @@ DEFINST(BC1F,       0x0b,
       SET_NPC(CPC + 8 + (OFS << 2));          \
   }
 DEFINST(BC1T,       0x0c,
-  "bc1t",     "j",
-  IntALU,     F_CTRL|F_COND|F_DIRJMP|F_FPCOND,
-  DNA, DNA,   DFCC, DNA, DNA)
+        "bc1t",     "j",
+        IntALU,     F_CTRL|F_COND|F_DIRJMP|F_FPCOND,
+        DNA, DNA,   DFCC, DNA, DNA)
 
 
 /*
@@ -500,9 +509,9 @@ DEFINST(BC1T,       0x0c,
     SET_GPR(RT, (word_t)(sword_t)_result);        \
   }
 DEFINST(LB,     0x20,
-  "lb",     "t,o(b)",
-  RdPort,     F_MEM|F_LOAD|F_DISP,
-  DGPR(RT), DNA,    DNA, DGPR(BS), DNA)
+        "lb",     "t,o(b)",
+        RdPort,     F_MEM|F_LOAD|F_DISP,
+        DGPR(RT), DNA,    DNA, DGPR(BS), DNA)
 
 #define LBU_IMPL              \
   {                 \
@@ -515,9 +524,9 @@ DEFINST(LB,     0x20,
     SET_GPR(RT, (word_t)_result);         \
   }
 DEFINST(LBU,      0x22,
-  "lbu",      "t,o(b)",
-  RdPort,     F_MEM|F_LOAD|F_DISP,
-  DGPR(RT), DNA,    DNA, DGPR(BS), DNA)
+        "lbu",      "t,o(b)",
+        RdPort,     F_MEM|F_LOAD|F_DISP,
+        DGPR(RT), DNA,    DNA, DGPR(BS), DNA)
 
 #define LH_IMPL               \
   {                 \
@@ -530,9 +539,9 @@ DEFINST(LBU,      0x22,
     SET_GPR(RT, (word_t)(sword_t)_result);        \
   }
 DEFINST(LH,       0x24,
-  "lh",     "t,o(b)",
-  RdPort,     F_MEM|F_LOAD|F_DISP,
-  DGPR(RT), DNA,    DNA, DGPR(BS), DNA)
+        "lh",     "t,o(b)",
+        RdPort,     F_MEM|F_LOAD|F_DISP,
+        DGPR(RT), DNA,    DNA, DGPR(BS), DNA)
 
 #define LHU_IMPL              \
   {                 \
@@ -545,9 +554,9 @@ DEFINST(LH,       0x24,
     SET_GPR(RT, (word_t)_result);         \
   }
 DEFINST(LHU,      0x26,
-  "lhu",      "t,o(b)",
-  RdPort,     F_MEM|F_LOAD|F_DISP,
-  DGPR(RT), DNA,    DNA, DGPR(BS), DNA)
+        "lhu",      "t,o(b)",
+        RdPort,     F_MEM|F_LOAD|F_DISP,
+        DGPR(RT), DNA,    DNA, DGPR(BS), DNA)
 
 #define LW_IMPL               \
   {                 \
@@ -564,9 +573,9 @@ DEFINST(LHU,      0x26,
     em.valE = de.valB + OFS;    \
   }
 DEFINST(LW,     0x28,
-  "lw",       "t,o(b)",
-  RdPort,     F_MEM|F_LOAD|F_DISP,
-  DGPR(RT), DNA,    DNA, DGPR(BS), DNA)
+        "lw",       "t,o(b)",
+        RdPort,     F_MEM|F_LOAD|F_DISP,
+        DGPR(RT), DNA,    DNA, DGPR(BS), DNA)
 
 #define DLW_IMPL              \
   {                 \
@@ -587,9 +596,9 @@ DEFINST(LW,     0x28,
     SET_GPR((RT) + 1, _result_lo);          \
   }
 DEFINST(DLW,      0x29,
-  "dlw",      "t,o(b)",
-  RdPort,     F_MEM|F_LOAD|F_DISP,
-  DGPR_D(RT), DNA,  DNA, DGPR(BS), DNA)
+        "dlw",      "t,o(b)",
+        RdPort,     F_MEM|F_LOAD|F_DISP,
+        DGPR_D(RT), DNA,  DNA, DGPR(BS), DNA)
 
 #define L_S_IMPL              \
   {                 \
@@ -602,9 +611,9 @@ DEFINST(DLW,      0x29,
     SET_FPR_L(FT, _result);           \
   }
 DEFINST(L_S,      0x2a,
-  "l.s",      "T,o(b)",
-  RdPort,     F_MEM|F_LOAD|F_DISP,
-  DFPR_L(FT), DNA,  DNA, DGPR(BS), DNA)
+        "l.s",      "T,o(b)",
+        RdPort,     F_MEM|F_LOAD|F_DISP,
+        DFPR_L(FT), DNA,  DNA, DGPR(BS), DNA)
 
 #define L_D_IMPL              \
   {                 \
@@ -626,9 +635,9 @@ DEFINST(L_S,      0x2a,
   }
 
 DEFINST(L_D,      0x2b,
-  "l.d",      "T,o(b)",
-  RdPort,     F_MEM|F_LOAD|F_DISP,
-  DFPR_D(FT), DNA,  DNA, DGPR(BS), DNA)
+        "l.d",      "T,o(b)",
+        RdPort,     F_MEM|F_LOAD|F_DISP,
+        DFPR_D(FT), DNA,  DNA, DGPR(BS), DNA)
 
 #if (!defined(MD_CROSS_ENDIAN) && defined(BYTES_BIG_ENDIAN)) || (defined(MD_CROSS_ENDIAN) && defined(BYTES_LITTLE_ENDIAN))
 #define LWL_IMPL              \
@@ -733,18 +742,18 @@ DEFINST(LWR,      0x2d,
                       (_lr_temp & ~WL_PROT_MASK(_temp_bs + OFS)))); \
   }
 DEFINST(LWL,      0x2c,
-  "lwl",      "t,o(b)",
-  RdPort,     F_MEM|F_LOAD|F_DISP,
-  DGPR(RT), DNA,    DNA, DGPR(BS), DNA)
+        "lwl",      "t,o(b)",
+        RdPort,     F_MEM|F_LOAD|F_DISP,
+        DGPR(RT), DNA,    DNA, DGPR(BS), DNA)
 /* #else */
 DEFINST(LWL,      0x2c,
-  "lwl",      "t,o(b)",
-  RdPort,     F_MEM|F_LOAD|F_DISP,
-  DGPR(RT), DNA,    DNA, DGPR(BS), DNA,
-  (ss_lr_temp = READ_WORD(WL_BASE(GPR(BS) + OFS)),
-   SET_GPR(RT, ((GPR(RT) & WL_PROT_MASK1(GPR(BS) + OFS)) |
-          ((ss_lr_temp << (8 * WL_SIZE(GPR(BS) + OFS)))
-           & ~WL_PROT_MASK1(GPR(BS) + OFS))))))
+        "lwl",      "t,o(b)",
+        RdPort,     F_MEM|F_LOAD|F_DISP,
+        DGPR(RT), DNA,    DNA, DGPR(BS), DNA,
+        (ss_lr_temp = READ_WORD(WL_BASE(GPR(BS) + OFS)),
+         SET_GPR(RT, ((GPR(RT) & WL_PROT_MASK1(GPR(BS) + OFS)) |
+                      ((ss_lr_temp << (8 * WL_SIZE(GPR(BS) + OFS)))
+                       & ~WL_PROT_MASK1(GPR(BS) + OFS))))))
 #endif
 
 #if 0
@@ -764,18 +773,18 @@ DEFINST(LWL,      0x2c,
                       (_lr_temp & ~WR_PROT_MASK(_temp_bs + OFS)))); \
   }
 DEFINST(LWR,      0x2d,
-  "lwr",      "t,o(b)",
-  RdPort,     F_MEM|F_LOAD|F_DISP,
-  DGPR(RT), DNA,    DNA, DGPR(BS), DNA)
+        "lwr",      "t,o(b)",
+        RdPort,     F_MEM|F_LOAD|F_DISP,
+        DGPR(RT), DNA,    DNA, DGPR(BS), DNA)
 /* #else */
 DEFINST(LWR,      0x2d,
-  "lwr",      "t,o(b)",
-  RdPort,     F_MEM|F_LOAD|F_DISP,
-  DGPR(RT), DNA,    DNA, DGPR(BS), DNA,
-  (ss_lr_temp = READ_WORD(WR_BASE(GPR(BS) + OFS)),
-   SET_GPR(RT, ((GPR(RT) & ~WR_PROT_MASK1(GPR(BS) + OFS)) |
-          ((ss_lr_temp >> (8 * (4 - WR_SIZE(GPR(BS) + OFS))))
-           & WR_PROT_MASK1(GPR(BS) + OFS))))))
+        "lwr",      "t,o(b)",
+        RdPort,     F_MEM|F_LOAD|F_DISP,
+        DGPR(RT), DNA,    DNA, DGPR(BS), DNA,
+        (ss_lr_temp = READ_WORD(WR_BASE(GPR(BS) + OFS)),
+         SET_GPR(RT, ((GPR(RT) & ~WR_PROT_MASK1(GPR(BS) + OFS)) |
+                      ((ss_lr_temp >> (8 * (4 - WR_SIZE(GPR(BS) + OFS))))
+                       & WR_PROT_MASK1(GPR(BS) + OFS))))))
 #endif
 
 #define SB_IMPL               \
@@ -789,9 +798,9 @@ DEFINST(LWR,      0x2d,
       DECLARE_FAULT(_fault);            \
   }
 DEFINST(SB,       0x30,
-  "sb",       "t,o(b)",
-  WrPort,     F_MEM|F_STORE|F_DISP,
-  DNA, DNA,   DGPR(RT), DGPR(BS), DNA)
+        "sb",       "t,o(b)",
+        WrPort,     F_MEM|F_STORE|F_DISP,
+        DNA, DNA,   DGPR(RT), DGPR(BS), DNA)
 
 #define SH_IMPL               \
   {                 \
@@ -804,9 +813,9 @@ DEFINST(SB,       0x30,
       DECLARE_FAULT(_fault);            \
   }
 DEFINST(SH,       0x32,
-  "sh",       "t,o(b)",
-  WrPort,     F_MEM|F_STORE|F_DISP,
-  DNA, DNA,   DGPR(RT), DGPR(BS), DNA)
+        "sh",       "t,o(b)",
+        WrPort,     F_MEM|F_STORE|F_DISP,
+        DNA, DNA,   DGPR(RT), DGPR(BS), DNA)
 
 #define SW_IMPL               \
   {                 \
@@ -823,9 +832,9 @@ DEFINST(SH,       0x32,
     em.valE = de.valB + OFS;    \
   }
 DEFINST(SW,       0x34,
-  "sw",       "t,o(b)",
-  WrPort,     F_MEM|F_STORE|F_DISP,
-  DNA, DNA,   DGPR(RT), DGPR(BS), DNA)
+        "sw",       "t,o(b)",
+        WrPort,     F_MEM|F_STORE|F_DISP,
+        DNA, DNA,   DGPR(RT), DGPR(BS), DNA)
 
 /* FIXME: this code not fault-safe, yet... */
 #define DSW_IMPL              \
@@ -843,9 +852,9 @@ DEFINST(SW,       0x34,
       DECLARE_FAULT(_fault);            \
   }
 DEFINST(DSW,      0x35,
-  "dsw",      "t,o(b)",
-  WrPort,     F_MEM|F_STORE|F_DISP,
-  DNA, DNA,   DGPR_D(RT), DGPR(BS), DNA)
+        "dsw",      "t,o(b)",
+        WrPort,     F_MEM|F_STORE|F_DISP,
+        DNA, DNA,   DGPR_D(RT), DGPR(BS), DNA)
 
 /* FIXME: this code not fault-safe, yet... */
 #define DSZ_IMPL              \
@@ -860,9 +869,9 @@ DEFINST(DSW,      0x35,
       DECLARE_FAULT(_fault);            \
   }
 DEFINST(DSZ,      0x38,
-  "dsz",      "o(b)",
-  WrPort,     F_MEM|F_STORE|F_DISP,
-  DNA, DNA,   DNA, DGPR(BS), DNA)
+        "dsz",      "o(b)",
+        WrPort,     F_MEM|F_STORE|F_DISP,
+        DNA, DNA,   DNA, DGPR(BS), DNA)
 
 #define S_S_IMPL              \
   {                 \
@@ -873,9 +882,9 @@ DEFINST(DSZ,      0x38,
       DECLARE_FAULT(_fault);            \
   }
 DEFINST(S_S,      0x36,
-  "s.s",      "T,o(b)",
-  WrPort,     F_MEM|F_STORE|F_DISP,
-  DNA, DNA,   DFPR_L(FT), DGPR(BS), DNA)
+        "s.s",      "T,o(b)",
+        WrPort,     F_MEM|F_STORE|F_DISP,
+        DNA, DNA,   DFPR_L(FT), DGPR(BS), DNA)
 
 /* FIXME: this code not fault-safe, yet... */
 #define S_D_IMPL              \
@@ -893,9 +902,9 @@ DEFINST(S_S,      0x36,
       DECLARE_FAULT(_fault);            \
   }
 DEFINST(S_D,      0x37,
-  "s.d",      "T,o(b)",
-  WrPort,     F_MEM|F_STORE|F_DISP,
-  DNA, DNA,   DFPR_D(FT), DGPR(BS), DNA)
+        "s.d",      "T,o(b)",
+        WrPort,     F_MEM|F_STORE|F_DISP,
+        DNA, DNA,   DFPR_D(FT), DGPR(BS), DNA)
 
 #if (!defined(MD_CROSS_ENDIAN) && defined(BYTES_BIG_ENDIAN)) || (defined(MD_CROSS_ENDIAN) && defined(BYTES_LITTLE_ENDIAN))
 #define SWL_IMPL              \
@@ -1000,19 +1009,19 @@ DEFINST(SWR,      0x3a,
       DECLARE_FAULT(_fault);            \
   }
 DEFINST(SWL,      0x39,
-  "swl",      "t,o(b)",
-  WrPort,     F_MEM|F_STORE|F_DISP,
-  DNA, DNA,   DGPR(RT), DGPR(BS), DNA)
+        "swl",      "t,o(b)",
+        WrPort,     F_MEM|F_STORE|F_DISP,
+        DNA, DNA,   DGPR(RT), DGPR(BS), DNA)
 /* #else */
 DEFINST(SWL,      0x39,
-  "swl",      "t,o(b)",
-  WrPort,     F_MEM|F_STORE|F_DISP,
-  DNA, DNA,   DGPR(RT), DGPR(BS), DNA,
-  (ss_lr_temp = READ_WORD(WL_BASE(GPR(BS) + OFS)),
-   ss_lr_temp = (((GPR(RT) >> (8 * WL_SIZE(GPR(BS) + OFS)))
-      & WL_PROT_MASK2(GPR(BS) + OFS)) |
-           (ss_lr_temp & ~WL_PROT_MASK2(GPR(BS) + OFS))),
-   WRITE_WORD(ss_lr_temp, WL_BASE(GPR(BS) + OFS))))
+        "swl",      "t,o(b)",
+        WrPort,     F_MEM|F_STORE|F_DISP,
+        DNA, DNA,   DGPR(RT), DGPR(BS), DNA,
+        (ss_lr_temp = READ_WORD(WL_BASE(GPR(BS) + OFS)),
+         ss_lr_temp = (((GPR(RT) >> (8 * WL_SIZE(GPR(BS) + OFS)))
+                        & WL_PROT_MASK2(GPR(BS) + OFS)) |
+                       (ss_lr_temp & ~WL_PROT_MASK2(GPR(BS) + OFS))),
+         WRITE_WORD(ss_lr_temp, WL_BASE(GPR(BS) + OFS))))
 #endif
 
 #if 0
@@ -1032,19 +1041,19 @@ DEFINST(SWL,      0x39,
       DECLARE_FAULT(_fault);            \
   }
 DEFINST(SWR,      0x3a,
-  "swr",      "t,o(b)",
-  WrPort,     F_MEM|F_STORE|F_DISP,
-  DNA, DNA,   DGPR(RT), DGPR(BS), DNA)
+        "swr",      "t,o(b)",
+        WrPort,     F_MEM|F_STORE|F_DISP,
+        DNA, DNA,   DGPR(RT), DGPR(BS), DNA)
 /* #else */
 DEFINST(SWR,      0x3a,
-  "swr",      "t,o(b)",
-  WrPort,     F_MEM|F_STORE|F_DISP,
-  DNA, DNA,   DGPR(RT), DGPR(BS), DNA,
-  (ss_lr_temp = READ_WORD(WR_BASE(GPR(BS)+OFS)),
-   ss_lr_temp = (((GPR(RT) << (8 * (4 - WR_SIZE(GPR(BS) + OFS))))
-      & ~WR_PROT_MASK2(GPR(BS)+OFS)) |
-           (ss_lr_temp & WR_PROT_MASK2(GPR(BS)+OFS))),
-   WRITE_WORD(ss_lr_temp, WR_BASE(GPR(BS)+OFS))))
+        "swr",      "t,o(b)",
+        WrPort,     F_MEM|F_STORE|F_DISP,
+        DNA, DNA,   DGPR(RT), DGPR(BS), DNA,
+        (ss_lr_temp = READ_WORD(WR_BASE(GPR(BS)+OFS)),
+         ss_lr_temp = (((GPR(RT) << (8 * (4 - WR_SIZE(GPR(BS) + OFS))))
+                        & ~WR_PROT_MASK2(GPR(BS)+OFS)) |
+                       (ss_lr_temp & WR_PROT_MASK2(GPR(BS)+OFS))),
+         WRITE_WORD(ss_lr_temp, WR_BASE(GPR(BS)+OFS))))
 #endif
 
 /* reg+reg loads and stores */
@@ -1061,9 +1070,9 @@ DEFINST(SWR,      0x3a,
     SET_GPR(RT, (word_t)(sword_t)_result);        \
   }
 DEFINST(LB_RR,      0xc0,
-  "lb",     "t,(b+d)",
-  RdPort,     F_MEM|F_LOAD|F_RR,
-  DGPR(RT), DNA,    DNA, DGPR(BS), DGPR(RD))
+        "lb",     "t,(b+d)",
+        RdPort,     F_MEM|F_LOAD|F_RR,
+        DGPR(RT), DNA,    DNA, DGPR(BS), DGPR(RD))
 
 #define LBU_RR_IMPL             \
   {                 \
@@ -1077,9 +1086,9 @@ DEFINST(LB_RR,      0xc0,
     SET_GPR(RT, (word_t)_result);         \
   }
 DEFINST(LBU_RR,     0xc1,
-  "lbu",      "t,(b+d)",
-  RdPort,     F_MEM|F_LOAD|F_RR,
-  DGPR(RT), DNA,    DNA, DGPR(BS), DGPR(RD))
+        "lbu",      "t,(b+d)",
+        RdPort,     F_MEM|F_LOAD|F_RR,
+        DGPR(RT), DNA,    DNA, DGPR(BS), DGPR(RD))
 
 #define LH_RR_IMPL              \
   {                 \
@@ -1093,9 +1102,9 @@ DEFINST(LBU_RR,     0xc1,
     SET_GPR(RT, (word_t)(sword_t)_result);        \
   }
 DEFINST(LH_RR,      0xc2,
-  "lh",     "t,(b+d)",
-  RdPort,     F_MEM|F_LOAD|F_RR,
-  DGPR(RT), DNA,    DNA, DGPR(BS), DGPR(RD))
+        "lh",     "t,(b+d)",
+        RdPort,     F_MEM|F_LOAD|F_RR,
+        DGPR(RT), DNA,    DNA, DGPR(BS), DGPR(RD))
 
 #define LHU_RR_IMPL             \
   {                 \
@@ -1109,9 +1118,9 @@ DEFINST(LH_RR,      0xc2,
     SET_GPR(RT, (word_t)_result);         \
   }
 DEFINST(LHU_RR,     0xc3,
-  "lhu",      "t,(b+d)",
-  RdPort,     F_MEM|F_LOAD|F_RR,
-  DGPR(RT), DNA,    DNA, DGPR(BS), DGPR(RD))
+        "lhu",      "t,(b+d)",
+        RdPort,     F_MEM|F_LOAD|F_RR,
+        DGPR(RT), DNA,    DNA, DGPR(BS), DGPR(RD))
 
 #define LW_RR_IMPL              \
   {                 \
@@ -1125,9 +1134,9 @@ DEFINST(LHU_RR,     0xc3,
     SET_GPR(RT, _result);           \
   }
 DEFINST(LW_RR,      0xc4,
-  "lw",       "t,(b+d)",
-  RdPort,     F_MEM|F_LOAD|F_RR,
-  DGPR(RT), DNA,    DNA, DGPR(BS), DGPR(RD))
+        "lw",       "t,(b+d)",
+        RdPort,     F_MEM|F_LOAD|F_RR,
+        DGPR(RT), DNA,    DNA, DGPR(BS), DGPR(RD))
 
 #define DLW_RR_IMPL             \
   {                 \
@@ -1148,9 +1157,9 @@ DEFINST(LW_RR,      0xc4,
     SET_GPR((RT) + 1, _result_lo);          \
   }
 DEFINST(DLW_RR,     0xce,
-  "dlw",      "t,(b+d)",
-  RdPort,     F_MEM|F_LOAD|F_RR,
-  DGPR_D(RT), DNA,  DNA, DGPR(BS), DGPR(RD))
+        "dlw",      "t,(b+d)",
+        RdPort,     F_MEM|F_LOAD|F_RR,
+        DGPR_D(RT), DNA,  DNA, DGPR(BS), DGPR(RD))
 
 #define L_S_RR_IMPL             \
   {                 \
@@ -1164,9 +1173,9 @@ DEFINST(DLW_RR,     0xce,
     SET_FPR_L(FT, _result);           \
   }
 DEFINST(L_S_RR,     0xc5,
-  "l.s",      "T,(b+d)",
-  RdPort,     F_MEM|F_LOAD|F_RR,
-  DFPR_L(FT), DNA,  DNA, DGPR(BS), DGPR(RD))
+        "l.s",      "T,(b+d)",
+        RdPort,     F_MEM|F_LOAD|F_RR,
+        DFPR_L(FT), DNA,  DNA, DGPR(BS), DGPR(RD))
 
 #define L_D_RR_IMPL             \
   {                 \
@@ -1187,9 +1196,9 @@ DEFINST(L_S_RR,     0xc5,
     SET_FPR_L((FT) + 1, _result_lo);          \
   }
 DEFINST(L_D_RR,     0xcf,
-  "l.d",      "T,(b+d)",
-  RdPort,     F_MEM|F_LOAD|F_RR,
-  DFPR_D(FT), DNA,  DNA, DGPR(BS), DGPR(RD))
+        "l.d",      "T,(b+d)",
+        RdPort,     F_MEM|F_LOAD|F_RR,
+        DFPR_D(FT), DNA,  DNA, DGPR(BS), DGPR(RD))
 
 #define SB_RR_IMPL              \
   {                 \
@@ -1202,9 +1211,9 @@ DEFINST(L_D_RR,     0xcf,
       DECLARE_FAULT(_fault);            \
   }
 DEFINST(SB_RR,      0xc6,
-  "sb",       "t,(b+d)",
-  WrPort,     F_MEM|F_STORE|F_RR,
-  DNA, DNA,   DGPR(RT), DGPR(BS), DGPR(RD))
+        "sb",       "t,(b+d)",
+        WrPort,     F_MEM|F_STORE|F_RR,
+        DNA, DNA,   DGPR(RT), DGPR(BS), DGPR(RD))
 
 #define SH_RR_IMPL              \
   {                 \
@@ -1217,9 +1226,9 @@ DEFINST(SB_RR,      0xc6,
       DECLARE_FAULT(_fault);            \
   }
 DEFINST(SH_RR,      0xc7,
-  "sh",       "t,(b+d)",
-  WrPort,     F_MEM|F_STORE|F_RR,
-  DNA, DNA,   DGPR(RT), DGPR(BS), DGPR(RD))
+        "sh",       "t,(b+d)",
+        WrPort,     F_MEM|F_STORE|F_RR,
+        DNA, DNA,   DGPR(RT), DGPR(BS), DGPR(RD))
 
 #define SW_RR_IMPL              \
   {                 \
@@ -1232,9 +1241,9 @@ DEFINST(SH_RR,      0xc7,
       DECLARE_FAULT(_fault);            \
   }
 DEFINST(SW_RR,      0xc8,
-  "sw",       "t,(b+d)",
-  WrPort,     F_MEM|F_STORE|F_RR,
-  DNA, DNA,   DGPR(RT), DGPR(BS), DGPR(RD))
+        "sw",       "t,(b+d)",
+        WrPort,     F_MEM|F_STORE|F_RR,
+        DNA, DNA,   DGPR(RT), DGPR(BS), DGPR(RD))
 
 /* FIXME: this code not fault-safe, yet... */
 #define DSW_RR_IMPL             \
@@ -1252,9 +1261,9 @@ DEFINST(SW_RR,      0xc8,
       DECLARE_FAULT(_fault);            \
   }
 DEFINST(DSW_RR,     0xd0,
-  "dsw",      "t,(b+d)",
-  WrPort,     F_MEM|F_STORE|F_RR,
-  DNA, DNA,   DGPR_D(RT), DGPR(BS), DGPR(RD))
+        "dsw",      "t,(b+d)",
+        WrPort,     F_MEM|F_STORE|F_RR,
+        DNA, DNA,   DGPR_D(RT), DGPR(BS), DGPR(RD))
 
 /* FIXME: this code not fault-safe, yet... */
 #define DSZ_RR_IMPL             \
@@ -1269,9 +1278,9 @@ DEFINST(DSW_RR,     0xd0,
       DECLARE_FAULT(_fault);            \
   }
 DEFINST(DSZ_RR,     0xd1,
-  "dsz",      "(b+d)",
-  WrPort,     F_MEM|F_STORE|F_RR,
-  DNA, DNA,   DNA, DGPR(BS), DGPR(RD))
+        "dsz",      "(b+d)",
+        WrPort,     F_MEM|F_STORE|F_RR,
+        DNA, DNA,   DNA, DGPR(BS), DGPR(RD))
 
 #define S_S_RR_IMPL             \
   {                 \
@@ -1282,9 +1291,9 @@ DEFINST(DSZ_RR,     0xd1,
       DECLARE_FAULT(_fault);            \
   }
 DEFINST(S_S_RR,     0xc9,
-  "s.s",      "T,(b+d)",
-  WrPort,     F_MEM|F_STORE|F_RR,
-  DNA, DNA,   DFPR_L(FT), DGPR(BS), DGPR(RD))
+        "s.s",      "T,(b+d)",
+        WrPort,     F_MEM|F_STORE|F_RR,
+        DNA, DNA,   DFPR_L(FT), DGPR(BS), DGPR(RD))
 
 /* FIXME: this code not fault-safe, yet... */
 #define S_D_RR_IMPL             \
@@ -1302,9 +1311,9 @@ DEFINST(S_S_RR,     0xc9,
       DECLARE_FAULT(_fault);            \
   }
 DEFINST(S_D_RR,     0xd2,
-  "s.d",      "T,(b+d)",
-  WrPort,     F_MEM|F_STORE|F_RR,
-  DNA, DNA,   DFPR_D(FT), DGPR(BS), DGPR(RD))
+        "s.d",      "T,(b+d)",
+        WrPort,     F_MEM|F_STORE|F_RR,
+        DNA, DNA,   DFPR_D(FT), DGPR(BS), DGPR(RD))
 
 
 /* reg + reg + 4 addressing mode, used to synthesize `l.d r,(s+t)^++' */
@@ -1321,9 +1330,9 @@ DEFINST(S_D_RR,     0xd2,
     SET_FPR_L(FT, _result);           \
   }
 DEFINST(L_S_RR_R2,    0xca,
-  "l.s.r2",     "T,(b+d)",
-  RdPort,     F_MEM|F_LOAD|F_RR,
-  DFPR_L(FT), DNA,  DNA, DGPR(BS), DGPR(RD))
+        "l.s.r2",     "T,(b+d)",
+        RdPort,     F_MEM|F_LOAD|F_RR,
+        DFPR_L(FT), DNA,  DNA, DGPR(BS), DGPR(RD))
 
 
 /* FIXME: obsolete, but do not delete or predecoded state images will break! */
@@ -1336,9 +1345,9 @@ DEFINST(L_S_RR_R2,    0xca,
       DECLARE_FAULT(_fault);            \
   }
 DEFINST(S_S_RR_R2,    0xcb,
-  "s.s.r2",     "T,(b+d)",
-  WrPort,     F_MEM|F_STORE|F_RR,
-  DNA, DNA,   DFPR_L(FT), DGPR(BS), DGPR(RD))
+        "s.s.r2",     "T,(b+d)",
+        WrPort,     F_MEM|F_STORE|F_RR,
+        DNA, DNA,   DFPR_L(FT), DGPR(BS), DGPR(RD))
 
 /* FIXME: obsolete, but do not delete or predecoded state images will break! */
 #define LW_RR_R2_IMPL             \
@@ -1353,9 +1362,9 @@ DEFINST(S_S_RR_R2,    0xcb,
     SET_GPR(RT, _result);           \
   }
 DEFINST(LW_RR_R2,   0xcc,
-  "lw.r2",    "t,(b+d)",
-  RdPort,     F_MEM|F_LOAD|F_RR,
-  DGPR(RT), DNA,    DNA, DGPR(BS), DGPR(RD))
+        "lw.r2",    "t,(b+d)",
+        RdPort,     F_MEM|F_LOAD|F_RR,
+        DGPR(RT), DNA,    DNA, DGPR(BS), DGPR(RD))
 
 /* FIXME: obsolete, but do not delete or predecoded state images will break! */
 #define SW_RR_R2_IMPL             \
@@ -1367,9 +1376,9 @@ DEFINST(LW_RR_R2,   0xcc,
       DECLARE_FAULT(_fault);            \
   }
 DEFINST(SW_RR_R2,   0xcd,
-  "sw.r2",    "t,(b+d)",
-  WrPort,     F_MEM|F_STORE|F_RR,
-  DNA, DNA,   DGPR(RT), DGPR(BS), DGPR(RD))
+        "sw.r2",    "t,(b+d)",
+        WrPort,     F_MEM|F_STORE|F_RR,
+        DNA, DNA,   DGPR(RT), DGPR(BS), DGPR(RD))
 
 
 /*
@@ -1390,9 +1399,9 @@ DEFINST(SW_RR_R2,   0xcd,
     em.valE = de.valA + de.valB;  \
   }
 DEFINST(ADD,      0x40,
-  "add",      "d,s,t",
-  IntALU,     F_ICOMP,
-  DGPR(RD), DNA,    DGPR(RS), DGPR(RT), DNA)
+        "add",      "d,s,t",
+        IntALU,     F_ICOMP,
+        DGPR(RD), DNA,    DGPR(RS), DGPR(RT), DNA)
 
 #define ADDI_IMPL             \
   {                 \
@@ -1409,11 +1418,11 @@ DEFINST(ADD,      0x40,
     em.valE = de.valA + IMM;  \
   }
 DEFINST(ADDI,     0x41,
-  "addi",     "t,s,i",
-  IntALU,     F_ICOMP|F_IMM,
-  DGPR(RT), DNA,    DGPR(RS), DNA, DNA)
+        "addi",     "t,s,i",
+        IntALU,     F_ICOMP|F_IMM,
+        DGPR(RT), DNA,    DGPR(RS), DNA, DNA)
 
-#define ADDU_IMPL             \
+#define ADDU_IMPL   \
   {                 \
     SET_GPR(RD, GPR(RS) + GPR(RT));         \
   }
@@ -1423,9 +1432,9 @@ DEFINST(ADDI,     0x41,
     em.valE = de.valA + de.valB;  \
   }
 DEFINST(ADDU,       0x42,
-  "addu",     "d,s,t",
-  IntALU,     F_ICOMP,
-  DGPR(RD), DNA,    DGPR(RS), DGPR(RT), DNA)
+        "addu",     "d,s,t",
+        IntALU,     F_ICOMP,
+        DGPR(RD), DNA,    DGPR(RS), DGPR(RT), DNA)
 
 #define ADDIU_IMPL              \
   {                 \
@@ -1437,9 +1446,9 @@ DEFINST(ADDU,       0x42,
     em.valE = de.valA + IMM;  \
   }
 DEFINST(ADDIU,      0x43,
-  "addiu",    "t,s,i",
-  IntALU,     F_ICOMP|F_IMM,
-  DGPR(RT), DNA,    DGPR(RS), DNA, DNA)
+        "addiu",    "t,s,i",
+        IntALU,     F_ICOMP|F_IMM,
+        DGPR(RT), DNA,    DGPR(RS), DNA, DNA)
 
 #define ADDOK_IMPL              \
   {                 \
@@ -1449,9 +1458,9 @@ DEFINST(ADDIU,      0x43,
       SET_GPR(RD, 1);         \
   }
 DEFINST(ADDOK,      0x61,
-  "addok",    "d,s,t",
-  IntALU,     F_ICOMP,
-  DGPR(RD), DNA,    DGPR(RS), DGPR(RT), DNA)
+        "addok",    "d,s,t",
+        IntALU,     F_ICOMP,
+        DGPR(RD), DNA,    DGPR(RS), DGPR(RT), DNA)
 
 #define BITCOUNT_IMPL              \
   {                 \
@@ -1464,9 +1473,9 @@ DEFINST(ADDOK,      0x61,
     SET_GPR(RT, count);          \
   }
 DEFINST(BITCOUNT,      0x62,
-  "bitcount",    "t,s,u",
-  IntALU,     F_ICOMP|F_IMM,
-  DGPR(RT), DNA,    DGPR(RS), DNA, DNA)
+        "bitcount",    "t,s,u",
+        IntALU,     F_ICOMP|F_IMM,
+        DGPR(RT), DNA,    DGPR(RS), DNA, DNA)
 
 #define SUB_IMPL              \
   {                 \
@@ -1476,34 +1485,33 @@ DEFINST(BITCOUNT,      0x62,
     SET_GPR(RD, GPR(RS) - GPR(RT));         \
   }
 DEFINST(SUB,      0x44,
-  "sub",      "d,s,t",
-  IntALU,     F_ICOMP,
-  DGPR(RD), DNA,    DGPR(RS), DGPR(RT), DNA)
+        "sub",      "d,s,t",
+        IntALU,     F_ICOMP,
+        DGPR(RD), DNA,    DGPR(RS), DGPR(RT), DNA)
 
 #define SUBU_IMPL             \
   {                 \
     SET_GPR(RD, GPR(RS) - GPR(RT));         \
   }
 DEFINST(SUBU,       0x45,
-  "subu",     "d,s,t",
-  IntALU,     F_ICOMP,
-  DGPR(RD), DNA,    DGPR(RS), DGPR(RT), DNA)
+        "subu",     "d,s,t",
+        IntALU,     F_ICOMP,
+        DGPR(RD), DNA,    DGPR(RS), DGPR(RT), DNA)
 
+/* HI,LO <- [rs] * [rt], integer product of [rs] & [rt] to HI/LO */
+/* for multiplication, treat -ve numbers as +ve numbers by
+   converting 2's complement -ve numbers to ordinary notation */
+/* take 2's complement of the result if the result is negative */
 #define MULT_IMPL             \
   {                 \
     bool_t _sign1, _sign2;            \
     int _i;               \
     sword_t _op1, _op2;             \
-                  \
-    /* HI,LO <- [rs] * [rt], integer product of [rs] & [rt] to HI/LO */ \
     _sign1 = _sign2 = FALSE;            \
     SET_HI(0);                \
     SET_LO(0);                \
     _op1 = GPR(RS);             \
     _op2 = GPR(RT);             \
-                  \
-    /* for multiplication, treat -ve numbers as +ve numbers by    \
-       converting 2's complement -ve numbers to ordinary notation */  \
     if (_op1 & 020000000000)            \
       {                 \
   _sign1 = TRUE;              \
@@ -1531,8 +1539,6 @@ DEFINST(SUBU,       0x45,
       SET_LO(LO + _op2);            \
     }               \
       }                 \
-                  \
-    /* take 2's complement of the result if the result is negative */ \
     if (_sign1 ^ _sign2)            \
       {                 \
   SET_LO(~LO);              \
@@ -1545,20 +1551,18 @@ DEFINST(SUBU,       0x45,
       }                 \
   }
 DEFINST(MULT,       0x46,
-  "mult",     "s,t",
-  IntMULT,    F_ICOMP|F_LONGLAT,
-  DHI, DLO,   DGPR(RT), DGPR(RS), DNA)
+        "mult",     "s,t",
+        IntMULT,    F_ICOMP|F_LONGLAT,
+        DHI, DLO,   DGPR(RT), DGPR(RS), DNA)
 
+/* HI,LO <- [rs] * [rt], integer product of [rs] & [rt] to HI/LO */
 #define MULTU_IMPL              \
   {                 \
     int _i;               \
-                  \
-    /* HI,LO <- [rs] * [rt], integer product of [rs] & [rt] to HI/LO */ \
     SET_HI(0);                \
     SET_LO(0);                \
     if (GPR(RS) & 020000000000)           \
       SET_LO(GPR(RT));              \
-                  \
     for (_i = 0; _i < 31; _i++)           \
       {                 \
   SET_HI(HI << 1);            \
@@ -1574,10 +1578,33 @@ DEFINST(MULT,       0x46,
     }               \
       }                 \
   }
+#undef MULTU_IMPL_PIPE
+#define MULTU_IMPL_PIPE              \
+  {                 \
+    int _i;               \
+    SET_HI(0);                \
+    SET_LO(0);                \
+    if (de.valA & 020000000000)           \
+      SET_LO(de.valB);              \
+    for (_i = 0; _i < 31; _i++)           \
+      {                 \
+  SET_HI(HI << 1);            \
+  SET_HI(HI + extractl(LO, 31, 1));       \
+  SET_LO(LO << 1);            \
+  if ((extractl(de.valA, 30 - _i, 1)) == 1)     \
+    {               \
+      if (((unsigned)037777777777 - (unsigned)LO) < (unsigned)de.valB)\
+        {               \
+    SET_HI(HI + 1);           \
+        }               \
+      SET_LO(LO + de.valB);         \
+    }               \
+      }                 \
+  }
 DEFINST(MULTU,      0x47,
-  "multu",    "s,t",
-  IntMULT,    F_ICOMP|F_LONGLAT,
-  DHI, DLO,   DGPR(RT), DGPR(RS), DNA)
+        "multu",    "s,t",
+        IntMULT,    F_ICOMP|F_LONGLAT,
+        DHI, DLO,   DGPR(RT), DGPR(RS), DNA)
 
 #define DIV_IMPL              \
   {                 \
@@ -1588,9 +1615,9 @@ DEFINST(MULTU,      0x47,
     SET_HI(GPR(RS) % GPR(RT));            \
   }
 DEFINST(DIV,      0x48,
-  "div",      "s,t",
-  IntDIV,     F_ICOMP|F_LONGLAT,
-  DHI, DLO,   DGPR(RT), DGPR(RS), DNA)
+        "div",      "s,t",
+        IntDIV,     F_ICOMP|F_LONGLAT,
+        DHI, DLO,   DGPR(RT), DGPR(RS), DNA)
 
 #define DIVU_IMPL             \
   {                 \
@@ -1601,45 +1628,50 @@ DEFINST(DIV,      0x48,
     SET_HI(((unsigned)GPR(RS)) % ((unsigned)GPR(RT)));      \
   }
 DEFINST(DIVU,       0x49,
-  "divu",     "s,t",
-  IntDIV,     F_ICOMP|F_LONGLAT,
-  DHI, DLO,   DGPR(RT), DGPR(RS), DNA)
+        "divu",     "s,t",
+        IntDIV,     F_ICOMP|F_LONGLAT,
+        DHI, DLO,   DGPR(RT), DGPR(RS), DNA)
 
 #define MFHI_IMPL             \
   {                 \
     SET_GPR(RD, HI);              \
   }
 DEFINST(MFHI,       0x4a,
-  "mfhi",     "d",
-  IntALU,     F_ICOMP,
-  DGPR(RD), DNA,    DHI, DNA, DNA)
+        "mfhi",     "d",
+        IntALU,     F_ICOMP,
+        DGPR(RD), DNA,    DHI, DNA, DNA)
 
 #define MTHI_IMPL             \
   {                 \
     SET_HI(GPR(RS));              \
   }
 DEFINST(MTHI,       0x4b,
-  "mthi",     "s",
-  IntALU,     F_ICOMP,
-  DHI, DNA,   DGPR(RS), DNA, DNA)
+        "mthi",     "s",
+        IntALU,     F_ICOMP,
+        DHI, DNA,   DGPR(RS), DNA, DNA)
 
 #define MFLO_IMPL             \
   {                 \
     SET_GPR(RD, LO);              \
   }
+#undef MFLO_IMPL_PIPE
+#define MFLO_IMPL_PIPE             \
+  {                 \
+    em.valE = LO; \
+  }
 DEFINST(MFLO,       0x4c,
-  "mflo",     "d",
-  IntALU,     F_ICOMP,
-  DGPR(RD), DNA,    DLO, DNA, DNA)
+        "mflo",     "d",
+        IntALU,     F_ICOMP,
+        DGPR(RD), DNA,    DLO, DNA, DNA)
 
 #define MTLO_IMPL             \
   {                 \
     SET_LO(GPR(RS));              \
   }
 DEFINST(MTLO,       0x4d,
-  "mtlo",     "s",
-  IntALU,     F_ICOMP,
-  DLO, DNA,   DGPR(RS), DNA, DNA)
+        "mtlo",     "s",
+        IntALU,     F_ICOMP,
+        DLO, DNA,   DGPR(RS), DNA, DNA)
 
 /* AND conflicts with GNU defs */
 #define AND__IMPL             \
@@ -1652,9 +1684,9 @@ DEFINST(MTLO,       0x4d,
     em.valE = de.valA & de.valB;  \
   }
 DEFINST(AND_,       0x4e,
-  "and",      "d,s,t",
-  IntALU,     F_ICOMP,
-  DGPR(RD), DNA,    DGPR(RS), DGPR(RT), DNA)
+        "and",      "d,s,t",
+        IntALU,     F_ICOMP,
+        DGPR(RD), DNA,    DGPR(RS), DGPR(RT), DNA)
 
 #define ANDI_IMPL             \
   {                 \
@@ -1666,9 +1698,9 @@ DEFINST(AND_,       0x4e,
     em.valE = de.valA & UIMM;  \
   }
 DEFINST(ANDI,     0x4f,
-  "andi",     "t,s,u",
-  IntALU,     F_ICOMP|F_IMM,
-  DGPR(RT), DNA,    DGPR(RS), DNA, DNA)
+        "andi",     "t,s,u",
+        IntALU,     F_ICOMP|F_IMM,
+        DGPR(RT), DNA,    DGPR(RS), DNA, DNA)
 
 #define OR_IMPL               \
   {                 \
@@ -1680,9 +1712,9 @@ DEFINST(ANDI,     0x4f,
     em.valE = de.valA | de.valB;  \
   }
 DEFINST(OR,       0x50,
-  "or",       "d,s,t",
-  IntALU,     F_ICOMP,
-  DGPR(RD), DNA,    DGPR(RS), DGPR(RT), DNA)
+        "or",       "d,s,t",
+        IntALU,     F_ICOMP,
+        DGPR(RD), DNA,    DGPR(RS), DGPR(RT), DNA)
 
 #define ORI_IMPL              \
   {                 \
@@ -1694,36 +1726,36 @@ DEFINST(OR,       0x50,
     em.valE = de.valA | UIMM;  \
   }
 DEFINST(ORI,      0x51,
-  "ori",      "t,s,u",
-  IntALU,     F_ICOMP|F_IMM,
-  DGPR(RT), DNA,    DGPR(RS), DNA, DNA)
+        "ori",      "t,s,u",
+        IntALU,     F_ICOMP|F_IMM,
+        DGPR(RT), DNA,    DGPR(RS), DNA, DNA)
 
 #define XOR_IMPL              \
   {                 \
     SET_GPR(RD, GPR(RS) ^ GPR(RT));         \
   }
 DEFINST(XOR,      0x52,
-  "xor",      "d,s,t",
-  IntALU,     F_ICOMP,
-  DGPR(RD), DNA,    DGPR(RS), DGPR(RT), DNA)
+        "xor",      "d,s,t",
+        IntALU,     F_ICOMP,
+        DGPR(RD), DNA,    DGPR(RS), DGPR(RT), DNA)
 
 #define XORI_IMPL             \
   {                 \
     SET_GPR(RT, GPR(RS) ^ UIMM);          \
   }
 DEFINST(XORI,       0x53,
-  "xori",     "t,s,u",
-  IntALU,     F_ICOMP|F_IMM,
-  DGPR(RT), DNA,    DGPR(RS), DNA, DNA)
+        "xori",     "t,s,u",
+        IntALU,     F_ICOMP|F_IMM,
+        DGPR(RT), DNA,    DGPR(RS), DNA, DNA)
 
 #define NOR_IMPL              \
   {                 \
     SET_GPR(RD, ~(GPR(RS) | GPR(RT)));          \
   }
 DEFINST(NOR,      0x54,
-  "nor",      "d,s,t",
-  IntALU,     F_ICOMP,
-  DGPR(RD), DNA,    DGPR(RS), DGPR(RT), DNA)
+        "nor",      "d,s,t",
+        IntALU,     F_ICOMP,
+        DGPR(RD), DNA,    DGPR(RS), DGPR(RT), DNA)
 
 #define SLL_IMPL              \
   {                 \
@@ -1735,18 +1767,18 @@ DEFINST(NOR,      0x54,
     em.valE = de.valA << SHAMT; \
   }
 DEFINST(SLL,      0x55,
-  "sll",      "d,t,H",
-  IntALU,     F_ICOMP,
-  DGPR(RD), DNA,    DGPR(RT), DNA, DNA)
+        "sll",      "d,t,H",
+        IntALU,     F_ICOMP,
+        DGPR(RD), DNA,    DGPR(RT), DNA, DNA)
 
 #define SLLV_IMPL             \
   {                 \
     SET_GPR(RD, GPR(RT) << (GPR(RS) & 037));        \
   }
 DEFINST(SLLV,       0x56,
-  "sllv",     "d,t,s",
-  IntALU,     F_ICOMP,
-  DGPR(RD), DNA,    DGPR(RT), DGPR(RS), DNA)
+        "sllv",     "d,t,s",
+        IntALU,     F_ICOMP,
+        DGPR(RD), DNA,    DGPR(RT), DGPR(RS), DNA)
 
 #ifdef FAST_SRL
 #define SRL_IMPL              \
@@ -1772,9 +1804,9 @@ DEFINST(SLLV,       0x56,
   }
 #endif /* FAST_SRL */
 DEFINST(SRL,      0x57,
-  "srl",      "d,t,H",
-  IntALU,     F_ICOMP,
-  DGPR(RD), DNA,    DGPR(RT), DNA, DNA)
+        "srl",      "d,t,H",
+        IntALU,     F_ICOMP,
+        DGPR(RD), DNA,    DGPR(RT), DNA, DNA)
 
 #ifdef FAST_SRL
 #define SRLV_IMPL             \
@@ -1802,9 +1834,9 @@ DEFINST(SRL,      0x57,
   }
 #endif /* FAST_SRL */
 DEFINST(SRLV,       0x58,
-  "srlv",     "d,t,s",
-  IntALU,     F_ICOMP,
-  DGPR(RD), DNA,    DGPR(RT), DGPR(RS), DNA)
+        "srlv",     "d,t,s",
+        IntALU,     F_ICOMP,
+        DGPR(RD), DNA,    DGPR(RT), DGPR(RS), DNA)
 
 #ifdef FAST_SRA
 #define SRA_IMPL              \
@@ -1834,9 +1866,9 @@ DEFINST(SRLV,       0x58,
   }
 #endif /* FAST_SRA */
 DEFINST(SRA,      0x59,
-  "sra",      "d,t,H",
-  IntALU,     F_ICOMP,
-  DGPR(RD), DNA,    DGPR(RT), DNA, DNA)
+        "sra",      "d,t,H",
+        IntALU,     F_ICOMP,
+        DGPR(RD), DNA,    DGPR(RT), DNA, DNA)
 
 #ifdef FAST_SRA
 #define SRAV_IMPL             \
@@ -1867,9 +1899,9 @@ DEFINST(SRA,      0x59,
   }
 #endif /* FAST_SRA */
 DEFINST(SRAV,       0x5a,
-  "srav",     "d,t,s",
-  IntALU,     F_ICOMP,
-  DGPR(RD), DNA,    DGPR(RT), DGPR(RS), DNA)
+        "srav",     "d,t,s",
+        IntALU,     F_ICOMP,
+        DGPR(RD), DNA,    DGPR(RT), DGPR(RS), DNA)
 
 #define SLT_IMPL              \
   {                 \
@@ -1884,9 +1916,9 @@ DEFINST(SRAV,       0x5a,
     em.valE = (de.valA < de.valB); \
   }
 DEFINST(SLT,      0x5b,
-  "slt",      "d,s,t",
-  IntALU,     F_ICOMP,
-  DGPR(RD), DNA,    DGPR(RS), DGPR(RT), DNA)
+        "slt",      "d,s,t",
+        IntALU,     F_ICOMP,
+        DGPR(RD), DNA,    DGPR(RS), DGPR(RT), DNA)
 
 #define SLTI_IMPL             \
   {                 \
@@ -1901,9 +1933,9 @@ DEFINST(SLT,      0x5b,
     em.valE = (de.valA < IMM); \
   }
 DEFINST(SLTI,       0x5c,
-  "slti",     "t,s,i",
-  IntALU,     F_ICOMP|F_IMM,
-  DGPR(RT), DNA,    DGPR(RS), DNA, DNA)
+        "slti",     "t,s,i",
+        IntALU,     F_ICOMP|F_IMM,
+        DGPR(RT), DNA,    DGPR(RS), DNA, DNA)
 
 #define SLTU_IMPL             \
   {                 \
@@ -1918,9 +1950,9 @@ DEFINST(SLTI,       0x5c,
     em.valE = (((unsigned)de.valA) < ((unsigned)de.valB)); \
   }
 DEFINST(SLTU,       0x5d,
-  "sltu",     "d,s,t",
-  IntALU,     F_ICOMP,
-  DGPR(RD), DNA,    DGPR(RS), DGPR(RT), DNA)
+        "sltu",     "d,s,t",
+        IntALU,     F_ICOMP,
+        DGPR(RD), DNA,    DGPR(RS), DGPR(RT), DNA)
 
 #define SLTIU_IMPL              \
   {                 \
@@ -1935,9 +1967,9 @@ DEFINST(SLTU,       0x5d,
     em.valE = (((unsigned)de.valA) < ((unsigned)IMM)); \
   }
 DEFINST(SLTIU,      0x5e,
-  "sltiu",    "t,s,i",
-  IntALU,     F_ICOMP|F_IMM,
-  DGPR(RT), DNA,    DGPR(RS), DNA, DNA)
+        "sltiu",    "t,s,i",
+        IntALU,     F_ICOMP|F_IMM,
+        DGPR(RT), DNA,    DGPR(RS), DNA, DNA)
 
 
 /*
@@ -1952,9 +1984,9 @@ DEFINST(SLTIU,      0x5e,
     SET_FPR_F(FD, FPR_F(FS) + FPR_F(FT));       \
   }
 DEFINST(FADD_S,     0x70,
-  "add.s",    "D,S,T",
-  FloatADD,   F_FCOMP,
-  DFPR_F(FD), DNA,  DFPR_F(FS), DFPR_F(FT), DNA)
+        "add.s",    "D,S,T",
+        FloatADD,   F_FCOMP,
+        DFPR_F(FD), DNA,  DFPR_F(FS), DFPR_F(FT), DNA)
 
 #define FADD_D_IMPL             \
   {                 \
@@ -1964,9 +1996,9 @@ DEFINST(FADD_S,     0x70,
     SET_FPR_D(FD, FPR_D(FS) + FPR_D(FT));       \
   }
 DEFINST(FADD_D,     0x71,
-  "add.d",    "D,S,T",
-  FloatADD,   F_FCOMP,
-  DFPR_D(FD), DNA,  DFPR_D(FS), DFPR_D(FT), DNA)
+        "add.d",    "D,S,T",
+        FloatADD,   F_FCOMP,
+        DFPR_D(FD), DNA,  DFPR_D(FS), DFPR_D(FT), DNA)
 
 #define FSUB_S_IMPL             \
   {                 \
@@ -1976,9 +2008,9 @@ DEFINST(FADD_D,     0x71,
     SET_FPR_F(FD, FPR_F(FS) - FPR_F(FT));       \
   }
 DEFINST(FSUB_S,     0x72,
-  "sub.s",    "D,S,T",
-  FloatADD,     F_FCOMP,
-  DFPR_F(FD), DNA,  DFPR_F(FS), DFPR_F(FT), DNA)
+        "sub.s",    "D,S,T",
+        FloatADD,     F_FCOMP,
+        DFPR_F(FD), DNA,  DFPR_F(FS), DFPR_F(FT), DNA)
 
 #define FSUB_D_IMPL             \
   {                 \
@@ -1988,9 +2020,9 @@ DEFINST(FSUB_S,     0x72,
     SET_FPR_D(FD, FPR_D(FS) - FPR_D(FT));       \
   }
 DEFINST(FSUB_D,     0x73,
-  "sub.d",    "D,S,T",
-  FloatADD,     F_FCOMP,
-  DFPR_D(FD), DNA,  DFPR_D(FS), DFPR_D(FT), DNA)
+        "sub.d",    "D,S,T",
+        FloatADD,     F_FCOMP,
+        DFPR_D(FD), DNA,  DFPR_D(FS), DFPR_D(FT), DNA)
 
 #define FMUL_S_IMPL             \
   {                 \
@@ -2000,9 +2032,9 @@ DEFINST(FSUB_D,     0x73,
     SET_FPR_F(FD, FPR_F(FS) * FPR_F(FT));       \
   }
 DEFINST(FMUL_S,     0x74,
-  "mul.s",    "D,S,T",
-  FloatMULT,    F_FCOMP|F_LONGLAT,
-  DFPR_F(FD), DNA,  DFPR_F(FS), DFPR_F(FT), DNA)
+        "mul.s",    "D,S,T",
+        FloatMULT,    F_FCOMP|F_LONGLAT,
+        DFPR_F(FD), DNA,  DFPR_F(FS), DFPR_F(FT), DNA)
 
 #define FMUL_D_IMPL             \
   {                 \
@@ -2012,9 +2044,9 @@ DEFINST(FMUL_S,     0x74,
     SET_FPR_D(FD, FPR_D(FS) * FPR_D(FT));       \
   }
 DEFINST(FMUL_D,     0x75,
-  "mul.d",    "D,S,T",
-  FloatMULT,    F_FCOMP|F_LONGLAT,
-  DFPR_D(FD), DNA,  DFPR_D(FS), DFPR_D(FT), DNA)
+        "mul.d",    "D,S,T",
+        FloatMULT,    F_FCOMP|F_LONGLAT,
+        DFPR_D(FD), DNA,  DFPR_D(FS), DFPR_D(FT), DNA)
 
 #define FDIV_S_IMPL             \
   {                 \
@@ -2024,9 +2056,9 @@ DEFINST(FMUL_D,     0x75,
     SET_FPR_F(FD, FPR_F(FS) / FPR_F(FT));       \
   }
 DEFINST(FDIV_S,     0x76,
-  "div.s",    "D,S,T",
-  FloatDIV,   F_FCOMP|F_LONGLAT,
-  DFPR_F(FD), DNA,  DFPR_F(FS), DFPR_F(FT), DNA)
+        "div.s",    "D,S,T",
+        FloatDIV,   F_FCOMP|F_LONGLAT,
+        DFPR_F(FD), DNA,  DFPR_F(FS), DFPR_F(FT), DNA)
 
 #define FDIV_D_IMPL             \
   {                 \
@@ -2036,9 +2068,9 @@ DEFINST(FDIV_S,     0x76,
     SET_FPR_D(FD, FPR_D(FS) / FPR_D(FT));       \
   }
 DEFINST(FDIV_D,     0x77,
-  "div.d",    "D,S,T",
-  FloatDIV,   F_FCOMP|F_LONGLAT,
-  DFPR_D(FD), DNA,  DFPR_D(FS), DFPR_D(FT), DNA)
+        "div.d",    "D,S,T",
+        FloatDIV,   F_FCOMP|F_LONGLAT,
+        DFPR_D(FD), DNA,  DFPR_D(FS), DFPR_D(FT), DNA)
 
 #define FABS_S_IMPL             \
   {                 \
@@ -2048,9 +2080,9 @@ DEFINST(FDIV_D,     0x77,
     SET_FPR_F(FD, (sfloat_t)fabs((dfloat_t)FPR_F(FS)));     \
   }
 DEFINST(FABS_S,     0x78,
-  "abs.s",    "D,S",
-  FloatADD,   F_FCOMP,
-  DFPR_F(FD), DNA,  DFPR_F(FS), DNA, DNA)
+        "abs.s",    "D,S",
+        FloatADD,   F_FCOMP,
+        DFPR_F(FD), DNA,  DFPR_F(FS), DNA, DNA)
 
 #define FABS_D_IMPL             \
   {                 \
@@ -2060,9 +2092,9 @@ DEFINST(FABS_S,     0x78,
     SET_FPR_D(FD, fabs(FPR_D(FS)));         \
   }
 DEFINST(FABS_D,     0x79,
-  "abs.d",    "D,S",
-  FloatADD,   F_FCOMP,
-  DFPR_D(FD), DNA,  DFPR_D(FS), DNA, DNA)
+        "abs.d",    "D,S",
+        FloatADD,   F_FCOMP,
+        DFPR_D(FD), DNA,  DFPR_D(FS), DNA, DNA)
 
 #define FMOV_S_IMPL             \
   {                 \
@@ -2072,9 +2104,9 @@ DEFINST(FABS_D,     0x79,
     SET_FPR_F(FD, FPR_F(FS));           \
   }
 DEFINST(FMOV_S,     0x7a,
-  "mov.s",    "D,S",
-  FloatADD,   F_FCOMP,
-  DFPR_F(FD), DNA,  DFPR_F(FS), DNA, DNA)
+        "mov.s",    "D,S",
+        FloatADD,   F_FCOMP,
+        DFPR_F(FD), DNA,  DFPR_F(FS), DNA, DNA)
 
 #define FMOV_D_IMPL             \
   {                 \
@@ -2084,9 +2116,9 @@ DEFINST(FMOV_S,     0x7a,
     SET_FPR_D(FD, FPR_D(FS));           \
   }
 DEFINST(FMOV_D,     0x7b,
-  "mov.d",    "D,S",
-  FloatADD,   F_FCOMP,
-  DFPR_D(FD), DNA,  DFPR_D(FS), DNA, DNA)
+        "mov.d",    "D,S",
+        FloatADD,   F_FCOMP,
+        DFPR_D(FD), DNA,  DFPR_D(FS), DNA, DNA)
 
 #define FNEG_S_IMPL             \
   {                 \
@@ -2096,9 +2128,9 @@ DEFINST(FMOV_D,     0x7b,
     SET_FPR_F(FD, -FPR_F(FS));            \
   }
 DEFINST(FNEG_S,     0x7c,
-  "neg.s",    "D,S",
-  FloatADD,   F_FCOMP,
-  DFPR_F(FD), DNA,  DFPR_F(FS), DNA, DNA)
+        "neg.s",    "D,S",
+        FloatADD,   F_FCOMP,
+        DFPR_F(FD), DNA,  DFPR_F(FS), DNA, DNA)
 
 #define FNEG_D_IMPL             \
   {                 \
@@ -2108,9 +2140,9 @@ DEFINST(FNEG_S,     0x7c,
     SET_FPR_D(FD, -FPR_D(FS));            \
   }
 DEFINST(FNEG_D,     0x7d,
-  "neg.d",    "D,S",
-  FloatADD,   F_FCOMP,
-  DFPR_D(FD), DNA,  DFPR_D(FS), DNA, DNA)
+        "neg.d",    "D,S",
+        FloatADD,   F_FCOMP,
+        DFPR_D(FD), DNA,  DFPR_D(FS), DNA, DNA)
 
 #define CVT_S_D_IMPL              \
   {                 \
@@ -2120,9 +2152,9 @@ DEFINST(FNEG_D,     0x7d,
     SET_FPR_F(FD, (float)FPR_D(FS));          \
   }
 DEFINST(CVT_S_D,    0x80,
-  "cvt.s.d",    "D,S",
-  FloatCVT,   F_FCOMP,
-  DFPR_F(FD), DNA,  DFPR_D(FS), DNA, DNA)
+        "cvt.s.d",    "D,S",
+        FloatCVT,   F_FCOMP,
+        DFPR_F(FD), DNA,  DFPR_D(FS), DNA, DNA)
 
 #define CVT_S_W_IMPL              \
   {                 \
@@ -2132,9 +2164,9 @@ DEFINST(CVT_S_D,    0x80,
     SET_FPR_F(FD, (float)FPR_L(FS));          \
   }
 DEFINST(CVT_S_W,    0x81,
-  "cvt.s.w",    "D,S",
-  FloatCVT,   F_FCOMP,
-  DFPR_F(FD), DNA,  DFPR_L(FS), DNA, DNA)
+        "cvt.s.w",    "D,S",
+        FloatCVT,   F_FCOMP,
+        DFPR_F(FD), DNA,  DFPR_L(FS), DNA, DNA)
 
 #define CVT_D_S_IMPL              \
   {                 \
@@ -2144,9 +2176,9 @@ DEFINST(CVT_S_W,    0x81,
     SET_FPR_D(FD, (dfloat_t)FPR_F(FS));         \
   }
 DEFINST(CVT_D_S,    0x82,
-  "cvt.d.s",    "D,S",
-  FloatCVT,   F_FCOMP,
-  DFPR_D(FD), DNA,  DFPR_F(FS), DNA, DNA)
+        "cvt.d.s",    "D,S",
+        FloatCVT,   F_FCOMP,
+        DFPR_D(FD), DNA,  DFPR_F(FS), DNA, DNA)
 
 #define CVT_D_W_IMPL              \
   {                 \
@@ -2156,9 +2188,9 @@ DEFINST(CVT_D_S,    0x82,
     SET_FPR_D(FD, (dfloat_t)FPR_L(FS));         \
   }
 DEFINST(CVT_D_W,    0x83,
-  "cvt.d.w",    "D,S",
-  FloatCVT,   F_FCOMP,
-  DFPR_D(FD), DNA,  DFPR_L(FS), DNA, DNA)
+        "cvt.d.w",    "D,S",
+        FloatCVT,   F_FCOMP,
+        DFPR_D(FD), DNA,  DFPR_L(FS), DNA, DNA)
 
 #define CVT_W_S_IMPL              \
   {                 \
@@ -2168,9 +2200,9 @@ DEFINST(CVT_D_W,    0x83,
     SET_FPR_L(FD, (sword_t)FPR_F(FS));          \
   }
 DEFINST(CVT_W_S,    0x84,
-  "cvt.w.s",    "D,S",
-  FloatCVT,   F_FCOMP,
-  DFPR_L(FD), DNA,  DFPR_F(FS), DNA, DNA)
+        "cvt.w.s",    "D,S",
+        FloatCVT,   F_FCOMP,
+        DFPR_L(FD), DNA,  DFPR_F(FS), DNA, DNA)
 
 #define CVT_W_D_IMPL              \
   {                 \
@@ -2180,9 +2212,9 @@ DEFINST(CVT_W_S,    0x84,
     SET_FPR_L(FD, (sword_t)FPR_D(FS));          \
   }
 DEFINST(CVT_W_D,    0x85,
-  "cvt.w.d",    "D,S",
-  FloatCVT,   F_FCOMP,
-  DFPR_L(FD), DNA,  DFPR_D(FS), DNA, DNA)
+        "cvt.w.d",    "D,S",
+        FloatCVT,   F_FCOMP,
+        DFPR_L(FD), DNA,  DFPR_D(FS), DNA, DNA)
 
 #define C_EQ_S_IMPL             \
   {                 \
@@ -2192,9 +2224,9 @@ DEFINST(CVT_W_D,    0x85,
     SET_FCC(FPR_F(FS) == FPR_F(FT));          \
   }
 DEFINST(C_EQ_S,     0x90,
-  "c.eq.s",     "S,T",
-  FloatCMP,   F_FCOMP,
-  DFCC, DNA,    DFPR_F(FS), DFPR_F(FT), DNA)
+        "c.eq.s",     "S,T",
+        FloatCMP,   F_FCOMP,
+        DFCC, DNA,    DFPR_F(FS), DFPR_F(FT), DNA)
 
 #define C_EQ_D_IMPL             \
   {                 \
@@ -2204,9 +2236,9 @@ DEFINST(C_EQ_S,     0x90,
     SET_FCC(FPR_D(FS) == FPR_D(FT));          \
   }
 DEFINST(C_EQ_D,     0x91,
-  "c.eq.d",     "S,T",
-  FloatCMP,   F_FCOMP,
-  DFCC, DNA,    DFPR_D(FS), DFPR_D(FT), DNA)
+        "c.eq.d",     "S,T",
+        FloatCMP,   F_FCOMP,
+        DFCC, DNA,    DFPR_D(FS), DFPR_D(FT), DNA)
 
 #define C_LT_S_IMPL             \
   {                 \
@@ -2216,9 +2248,9 @@ DEFINST(C_EQ_D,     0x91,
     SET_FCC(FPR_F(FS) < FPR_F(FT));         \
   }
 DEFINST(C_LT_S,     0x92,
-  "c.lt.s",     "S,T",
-  FloatCMP,   F_FCOMP,
-  DFCC, DNA,    DFPR_F(FS), DFPR_F(FT), DNA)
+        "c.lt.s",     "S,T",
+        FloatCMP,   F_FCOMP,
+        DFCC, DNA,    DFPR_F(FS), DFPR_F(FT), DNA)
 
 #define C_LT_D_IMPL             \
   {                 \
@@ -2228,9 +2260,9 @@ DEFINST(C_LT_S,     0x92,
     SET_FCC(FPR_D(FS) < FPR_D(FT));         \
   }
 DEFINST(C_LT_D,     0x93,
-  "c.lt.d",     "S,T",
-  FloatCMP,   F_FCOMP,
-  DFCC, DNA,    DFPR_D(FS), DFPR_D(FT), DNA)
+        "c.lt.d",     "S,T",
+        FloatCMP,   F_FCOMP,
+        DFCC, DNA,    DFPR_D(FS), DFPR_D(FT), DNA)
 
 #define C_LE_S_IMPL             \
   {                 \
@@ -2240,9 +2272,9 @@ DEFINST(C_LT_D,     0x93,
     SET_FCC(FPR_F(FS) <= FPR_F(FT));          \
   }
 DEFINST(C_LE_S,     0x94,
-  "c.le.s",     "S,T",
-  FloatCMP,   F_FCOMP,
-  DFCC, DNA,    DFPR_F(FS), DFPR_F(FT), DNA)
+        "c.le.s",     "S,T",
+        FloatCMP,   F_FCOMP,
+        DFCC, DNA,    DFPR_F(FS), DFPR_F(FT), DNA)
 
 #define C_LE_D_IMPL             \
   {                 \
@@ -2252,9 +2284,9 @@ DEFINST(C_LE_S,     0x94,
     SET_FCC(FPR_D(FS) <= FPR_D(FT));          \
   }
 DEFINST(C_LE_D,     0x95,
-  "c.le.d",     "S,T",
-  FloatCMP,   F_FCOMP,
-  DFCC, DNA,    DFPR_D(FS), DFPR_D(FT), DNA)
+        "c.le.d",     "S,T",
+        FloatCMP,   F_FCOMP,
+        DFCC, DNA,    DFPR_D(FS), DFPR_D(FT), DNA)
 
 #define FSQRT_S_IMPL              \
   {                 \
@@ -2264,9 +2296,9 @@ DEFINST(C_LE_D,     0x95,
     SET_FPR_F(FD, (sfloat_t)sqrt((dfloat_t)FPR_F(FS)));     \
   }
 DEFINST(FSQRT_S,    0x96,
-  "sqrt.s",   "D,S",
-  FloatSQRT,    F_FCOMP|F_LONGLAT,
-  DFPR_F(FD), DNA,  DFPR_F(FS), DNA, DNA)
+        "sqrt.s",   "D,S",
+        FloatSQRT,    F_FCOMP|F_LONGLAT,
+        DFPR_F(FD), DNA,  DFPR_F(FS), DNA, DNA)
 
 #define FSQRT_D_IMPL              \
   {                 \
@@ -2276,9 +2308,9 @@ DEFINST(FSQRT_S,    0x96,
     SET_FPR_D(FD, sqrt(FPR_D(FS)));         \
   }
 DEFINST(FSQRT_D,    0x97,
-  "sqrt.d",   "D,S",
-  FloatSQRT,    F_FCOMP|F_LONGLAT,
-  DFPR_D(FD), DNA,  DFPR_D(FS), DNA, DNA)
+        "sqrt.d",   "D,S",
+        FloatSQRT,    F_FCOMP|F_LONGLAT,
+        DFPR_D(FD), DNA,  DFPR_D(FS), DNA, DNA)
 
 
 /*
@@ -2294,9 +2326,9 @@ DEFINST(FSQRT_D,    0x97,
   {                 \
   }
 DEFINST(SYSCALL,    0xa0,
-  "syscall",    "",
-  NA,       F_TRAP,
-  DNA, DNA,   DNA, DNA, DNA)
+        "syscall",    "",
+        NA,       F_TRAP,
+        DNA, DNA,   DNA, DNA, DNA)
 
 #define BREAK_IMPL              \
   {                 \
@@ -2307,9 +2339,9 @@ DEFINST(SYSCALL,    0xa0,
   }
 
 DEFINST(BREAK,      0xa1,
-  "break",    "B",
-  NA,     F_TRAP,
-  DNA, DNA,   DNA, DNA, DNA)
+        "break",    "B",
+        NA,     F_TRAP,
+        DNA, DNA,   DNA, DNA, DNA)
 
 #define LUI_IMPL              \
   {                 \
@@ -2321,18 +2353,18 @@ DEFINST(BREAK,      0xa1,
     em.valE = UIMM << 16;   \
   }
 DEFINST(LUI,      0xa2,
-  "lui",      "t,U",
-  IntALU,     F_ICOMP,
-  DGPR(RT), DNA,    DNA, DNA, DNA)
+        "lui",      "t,U",
+        IntALU,     F_ICOMP,
+        DGPR(RT), DNA,    DNA, DNA, DNA)
 
 #define MFC1_IMPL             \
   {                 \
     SET_GPR(RT, FPR_L(FS));           \
   }
 DEFINST(MFC1,     0xa3,
-  "mfc1",     "t,S",
-  IntALU,     F_ICOMP,
-  DGPR(RT), DNA,    DFPR_L(FS), DNA, DNA)
+        "mfc1",     "t,S",
+        IntALU,     F_ICOMP,
+        DGPR(RT), DNA,    DFPR_L(FS), DNA, DNA)
 
 #define DMFC1_IMPL              \
   {                 \
@@ -2343,27 +2375,27 @@ DEFINST(MFC1,     0xa3,
     SET_GPR((RT)+1, FPR_L((FS)+1));         \
   }
 DEFINST(DMFC1,      0xa7,
-  "dmfc1",    "t,S",
-  IntALU,     F_ICOMP,
-  DGPR_D(RT), DNA,  DFPR_D(FS), DNA, DNA)
+        "dmfc1",    "t,S",
+        IntALU,     F_ICOMP,
+        DGPR_D(RT), DNA,  DFPR_D(FS), DNA, DNA)
 
 #define CFC1_IMPL             \
   {                 \
     /* FIXME: is this needed??? */          \
   }
 DEFINST(CFC1,       0xa4,
-  "cfc1",     "t,S",
-  IntALU,     F_ICOMP,
-  DNA, DNA,   DNA, DNA, DNA)
+        "cfc1",     "t,S",
+        IntALU,     F_ICOMP,
+        DNA, DNA,   DNA, DNA, DNA)
 
 #define MTC1_IMPL             \
   {                 \
     SET_FPR_L(FS, GPR(RT));           \
   }
 DEFINST(MTC1,       0xa5,
-  "mtc1",     "t,S",
-  IntALU,     F_ICOMP,
-  DFPR_L(FS), DNA,  DGPR(RT), DNA, DNA)
+        "mtc1",     "t,S",
+        IntALU,     F_ICOMP,
+        DFPR_L(FS), DNA,  DGPR(RT), DNA, DNA)
 
 #define DMTC1_IMPL              \
   {                 \
@@ -2374,18 +2406,18 @@ DEFINST(MTC1,       0xa5,
     SET_FPR_L((FS)+1, GPR((RT)+1));         \
   }
 DEFINST(DMTC1,      0xa8,
-  "dmtc1",    "t,S",
-  IntALU,     F_ICOMP,
-  DFPR_D(FS), DNA,  DGPR_D(RT), DNA, DNA)
+        "dmtc1",    "t,S",
+        IntALU,     F_ICOMP,
+        DFPR_D(FS), DNA,  DGPR_D(RT), DNA, DNA)
 
 #define CTC1_IMPL             \
   {                 \
     /* FIXME: is this needed??? */          \
   }
 DEFINST(CTC1,       0xa6,
-  "ctc1",     "t,S",
-  IntALU,     F_ICOMP,
-  DNA, DNA,   DNA, DNA, DNA)
+        "ctc1",     "t,S",
+        IntALU,     F_ICOMP,
+        DNA, DNA,   DNA, DNA, DNA)
 
 /* clean up all definitions... */
 #undef NOP_IMPL

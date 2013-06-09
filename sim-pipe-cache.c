@@ -17,6 +17,7 @@
 #include "dlite.h"
 #include "sim.h"
 #include "sim-pipe.h"
+#include "sim-pipe-cache.h"
 
 /* simulated registers */
 static struct regs_t regs;
@@ -62,6 +63,8 @@ struct ifid_buf fd;
 struct idex_buf de;
 struct exmem_buf em;
 struct memwb_buf mw;
+
+struct cache_line cache[16];
 
 #define DNA          (0)
 

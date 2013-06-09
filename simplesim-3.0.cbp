@@ -127,6 +127,10 @@
 		<Unit filename="sim-outorder.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="sim-pipe-cache.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="sim-pipe-cache.h" />
 		<Unit filename="sim-pipe-withstall.c">
 			<Option compilerVar="CC" />
 		</Unit>

@@ -8,7 +8,7 @@
 		<Cursor position="0" topLine="260" />
 	</File>
 	<File name="cache.h" open="0" top="0" tabpos="0">
-		<Cursor position="0" topLine="203" />
+		<Cursor position="0" topLine="276" />
 	</File>
 	<File name="endian.h" open="0" top="0" tabpos="0">
 		<Cursor position="2772" topLine="45" />
@@ -16,11 +16,11 @@
 	<File name="host.h" open="0" top="0" tabpos="0">
 		<Cursor position="3569" topLine="75" />
 	</File>
-	<File name="machine.def" open="1" top="0" tabpos="3">
+	<File name="machine.def" open="0" top="0" tabpos="3">
 		<Cursor position="4400" topLine="1190" />
 	</File>
 	<File name="machine.h" open="0" top="0" tabpos="0">
-		<Cursor position="6276" topLine="183" />
+		<Cursor position="6276" topLine="197" />
 	</File>
 	<File name="memory.h" open="0" top="0" tabpos="0">
 		<Cursor position="6986" topLine="163" />
@@ -28,23 +28,26 @@
 	<File name="resource.c" open="0" top="0" tabpos="0">
 		<Cursor position="3749" topLine="86" />
 	</File>
-	<File name="sim-bpred.c" open="0" top="0" tabpos="0">
-		<Cursor position="14340" topLine="424" />
+	<File name="sim-bpred.c" open="0" top="0" tabpos="3">
+		<Cursor position="13520" topLine="405" />
 	</File>
-	<File name="sim-fast.c" open="0" top="0" tabpos="0">
-		<Cursor position="13407" topLine="428" />
+	<File name="sim-fast.c" open="0" top="0" tabpos="4">
+		<Cursor position="13407" topLine="362" />
 	</File>
 	<File name="sim-outorder.c" open="0" top="0" tabpos="0">
 		<Cursor position="104412" topLine="3342" />
 	</File>
-	<File name="sim-pipe-withstall.c" open="1" top="1" tabpos="2">
+	<File name="sim-pipe-cache.c" open="1" top="1" tabpos="0">
+		<Cursor position="0" topLine="0" />
+	</File>
+	<File name="sim-pipe-withstall.c" open="0" top="0" tabpos="2">
 		<Cursor position="8972" topLine="336" />
 	</File>
-	<File name="sim-pipe.c" open="1" top="0" tabpos="4">
-		<Cursor position="1741" topLine="53" />
+	<File name="sim-pipe.c" open="0" top="0" tabpos="2">
+		<Cursor position="11131" topLine="195" />
 	</File>
 	<File name="sim-pipe.h" open="1" top="0" tabpos="1">
-		<Cursor position="156" topLine="6" />
+		<Cursor position="156" topLine="0" />
 	</File>
 	<File name="sim-safe.c" open="0" top="0" tabpos="0">
 		<Cursor position="10440" topLine="310" />
@@ -56,10 +59,10 @@
 		<Cursor position="4039" topLine="74" />
 	</File>
 	<File name="target-pisa/pisa.c" open="0" top="0" tabpos="0">
-		<Cursor position="14546" topLine="660" />
+		<Cursor position="14546" topLine="0" />
 	</File>
-	<File name="target-pisa/pisa.def" open="0" top="0" tabpos="0">
-		<Cursor position="37967" topLine="1058" />
+	<File name="target-pisa/pisa.def" open="0" top="0" tabpos="1">
+		<Cursor position="19255" topLine="554" />
 	</File>
 	<File name="target-pisa/pisa.h" open="0" top="0" tabpos="5">
 		<Cursor position="3862" topLine="103" />
