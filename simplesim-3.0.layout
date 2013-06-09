@@ -37,7 +37,7 @@
 	<File name="sim-outorder.c" open="0" top="0" tabpos="0">
 		<Cursor position="104412" topLine="3342" />
 	</File>
-	<File name="sim-pipe-cache.c" open="1" top="1" tabpos="0">
+	<File name="sim-pipe-cache.c" open="1" top="0" tabpos="0">
 		<Cursor position="0" topLine="0" />
 	</File>
 	<File name="sim-pipe-withstall.c" open="0" top="0" tabpos="2">
