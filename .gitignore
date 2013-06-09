@@ -9,6 +9,7 @@ sysprobe
 sim-fast
 sim-safe
 sim-pipe
+sim-pipe-cache
 sim-pipe-withstall
 sim-eio
 sim-bpred
