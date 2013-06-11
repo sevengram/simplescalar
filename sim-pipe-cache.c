@@ -222,9 +222,6 @@ void sim_main(void)
         do_id();
 
         do_if();
-//
-//        if (cycle_count > 400)
-//            break;
     }
 }
 
@@ -460,9 +457,9 @@ bool_t write_cache(word_t data, md_addr_t addr)
 
 word_t read_word(md_addr_t addr)
 {
- //   printf("read - addr:0x%x, set:%d, tag:%d, offset:%d\n", addr, GET_SET(addr), GET_TAG(addr),GET_OFFSET(addr));
     word_t result;
     enum md_fault_type _fault;
+    mem_access_count++;
 #ifdef USE_CACHE
     if (read_cache(&result, addr)) {
         cache_hit_count++;
@@ -470,7 +467,6 @@ word_t read_word(md_addr_t addr)
     } else {
         cycle_count += 9;
         cache_miss_count++;
-        mem_access_count++;
         result = READ_WORD(addr, _fault);
         if (_fault != md_fault_none)
             fprintf(stderr, "READ_WORD error: %d\n", _fault);
@@ -479,7 +475,6 @@ word_t read_word(md_addr_t addr)
     }
 #else
     cycle_count += 9;
-    mem_access_count++;
     result = READ_WORD(addr, _fault);
     if (_fault != md_fault_none)
         fprintf(stderr, "READ_WORD error: %d\n", _fault);
@@ -489,13 +484,12 @@ word_t read_word(md_addr_t addr)
 
 void write_word(word_t data, md_addr_t addr)
 {
- //   printf("write - addr:0x%x, set:%d, tag:%d, offset:%d\n", addr, GET_SET(addr), GET_TAG(addr),GET_OFFSET(addr));
     enum md_fault_type _fault;
+    mem_access_count++;
 #ifdef USE_CACHE
     if (!write_cache(data, addr)) {
         cycle_count += 9;
         cache_miss_count++;
-        mem_access_count++;
         WRITE_WORD(data, addr, _fault);
         if (_fault != md_fault_none)
             fprintf(stderr, "WRITE_WORD error: %d\n", _fault);
@@ -505,7 +499,6 @@ void write_word(word_t data, md_addr_t addr)
     }
 #else
     cycle_count += 9;
-    mem_access_count++;
     WRITE_WORD(data, addr, _fault);
     if (_fault != md_fault_none)
         fprintf(stderr, "WRITE_WORD error: %d\n", _fault);

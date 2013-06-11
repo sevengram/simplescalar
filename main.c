@@ -212,7 +212,7 @@ sim_print_stats(FILE *fd)		/* output stream */
 #endif
     /* print simulation stats */
     fprintf(fd, "\nsim: ** lab2 cache statistics **\n");
-    fprintf(fd, "Cycles: %d\nMemory accesses: %d\nCache hits: %d\nCache Miss: %d\nCache replacement: %d\nCache write-back: %d\n",
+    fprintf(fd, "Cycles: %d\nTotal accesses: %d\nCache hit: %d\nCache miss: %d\nCache replacement: %d\nCache write-back: %d\n",
             cycle_count, mem_access_count, cache_hit_count, cache_miss_count, cache_replace_count, cache_wb_count);
 
     fprintf(fd, "\nsim: ** simulation statistics **\n");

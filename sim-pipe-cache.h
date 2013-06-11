@@ -19,7 +19,7 @@ struct cache_line{
     unsigned int tag:28;
     unsigned int dirty:1;
     unsigned int valid:1;
-    unsigned int ref_count:2;
+    unsigned int padding:2;
 };
 
 struct cache_set{
