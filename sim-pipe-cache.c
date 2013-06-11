@@ -222,6 +222,9 @@ void sim_main(void)
         do_id();
 
         do_if();
+//
+//        if (cycle_count > 400)
+//            break;
     }
 }
 
@@ -457,6 +460,7 @@ bool_t write_cache(word_t data, md_addr_t addr)
 
 word_t read_word(md_addr_t addr)
 {
+ //   printf("read - addr:0x%x, set:%d, tag:%d, offset:%d\n", addr, GET_SET(addr), GET_TAG(addr),GET_OFFSET(addr));
     word_t result;
     enum md_fault_type _fault;
 #ifdef USE_CACHE
@@ -485,6 +489,7 @@ word_t read_word(md_addr_t addr)
 
 void write_word(word_t data, md_addr_t addr)
 {
+ //   printf("write - addr:0x%x, set:%d, tag:%d, offset:%d\n", addr, GET_SET(addr), GET_TAG(addr),GET_OFFSET(addr));
     enum md_fault_type _fault;
 #ifdef USE_CACHE
     if (!write_cache(data, addr)) {

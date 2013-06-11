@@ -55,11 +55,11 @@
 	<File name="sim-outorder.c" open="0" top="0" tabpos="0">
 		<Cursor position="104412" topLine="3342" />
 	</File>
-	<File name="sim-pipe-cache.c" open="0" top="0" tabpos="1">
-		<Cursor position="13144" topLine="426" />
+	<File name="sim-pipe-cache.c" open="1" top="0" tabpos="1">
+		<Cursor position="12283" topLine="457" />
 	</File>
-	<File name="sim-pipe-cache.h" open="0" top="0" tabpos="0">
-		<Cursor position="440" topLine="0" />
+	<File name="sim-pipe-cache.h" open="1" top="1" tabpos="2">
+		<Cursor position="94" topLine="0" />
 	</File>
 	<File name="sim-pipe-withstall.c" open="0" top="0" tabpos="2">
 		<Cursor position="8972" topLine="336" />

@@ -1,11 +1,11 @@
 #ifndef SIM_PIPE_CACHE_H
 #define SIM_PIPE_CACHE_H
 
-#define GET_OFFSET(addr) ((addr)&0x3)
-#define GET_SET(addr) (((addr)>>2)&0xf)
-#define GET_TAG(addr) (((addr)>>6)&0x3ffffff)
+#define GET_OFFSET(addr) (((addr)>>2)&0x3)
+#define GET_SET(addr) (((addr)>>8)&0xf)
+#define GET_TAG(addr) (((addr)>>4)&0xfffffff)
 #define GET_BASE(tag, index) (((tag)<<6)+((index)<<2))
-#define GET_BASEADDR(addr) ((addr)&0xc)
+#define GET_BASEADDR(addr) ((addr)&0xfffffff0)
 
 extern int cycle_count;
 extern int mem_access_count;
@@ -16,10 +16,10 @@ extern int cache_wb_count;
 
 struct cache_line{
     unsigned int data[4];
-    unsigned int tag:26;
+    unsigned int tag:28;
     unsigned int dirty:1;
     unsigned int valid:1;
-    unsigned int ref_count:20;
+    unsigned int ref_count:2;
 };
 
 struct cache_set{
