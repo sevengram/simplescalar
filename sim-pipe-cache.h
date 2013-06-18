@@ -1,10 +1,10 @@
 #ifndef SIM_PIPE_CACHE_H
 #define SIM_PIPE_CACHE_H
 
-#define GET_OFFSET(addr) (((addr)>>2)&0x3)
+#define GET_OFFSET(addr) ((addr)&0xf)
 #define GET_SET(addr) (((addr)>>8)&0xf)
 #define GET_TAG(addr) (((addr)>>4)&0xfffffff)
-#define GET_BASE(tag, index) (((tag)<<6)+((index)<<2))
+#define GET_BASE(tag) ((tag)<<4)
 #define GET_BASEADDR(addr) ((addr)&0xfffffff0)
 
 extern int cycle_count;

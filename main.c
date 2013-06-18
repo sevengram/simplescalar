@@ -215,9 +215,9 @@ sim_print_stats(FILE *fd)		/* output stream */
     fprintf(fd, "Cycles: %d\nTotal accesses: %d\nCache hit: %d\nCache miss: %d\nCache replacement: %d\nCache write-back: %d\n",
             cycle_count, mem_access_count, cache_hit_count, cache_miss_count, cache_replace_count, cache_wb_count);
 
-    fprintf(fd, "\nsim: ** simulation statistics **\n");
-    stat_print_stats(sim_sdb, fd);
-    sim_aux_stats(fd);
+//    fprintf(fd, "\nsim: ** simulation statistics **\n");
+//    stat_print_stats(sim_sdb, fd);
+//    sim_aux_stats(fd);
     fprintf(fd, "\n");
 }
 

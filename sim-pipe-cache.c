@@ -389,7 +389,7 @@ void write_back(struct cache_line* line, int index)
 {
     int i;
     enum md_fault_type _fault;
-    md_addr_t base_addr = GET_BASE(line->tag, index);
+    md_addr_t base_addr = GET_BASE(line->tag);
     for (i = 0; i < 4; i++) {
         WRITE_WORD(line->data[i], base_addr + 4 * i, _fault);
         if (_fault != md_fault_none) {
@@ -431,9 +431,10 @@ bool_t read_cache(word_t *result, md_addr_t addr)
     int i;
     int index = GET_SET(addr);
     int tag = GET_TAG(addr);
+    size_t size = sizeof(word_t);
     for (i = 0; i < 4; i++) {
         if (c_set[index].c_line[i].valid && c_set[index].c_line[i].tag == tag) {
-            *result = c_set[index].c_line[i].data[GET_OFFSET(addr)];
+            *result = c_set[index].c_line[i].data[GET_OFFSET(addr)/size];
             return TRUE;
         }
     }
@@ -445,9 +446,10 @@ bool_t write_cache(word_t data, md_addr_t addr)
     int i;
     int index = GET_SET(addr);
     int tag = GET_TAG(addr);
+    size_t size = sizeof(word_t);
     for (i = 0; i < 4; i++) {
         if (c_set[index].c_line[i].valid && c_set[index].c_line[i].tag == tag) {
-            c_set[index].c_line[i].data[GET_OFFSET(addr)] = data;
+            c_set[index].c_line[i].data[GET_OFFSET(addr)/size] = data;
             c_set[index].c_line[i].dirty = 1;
             return TRUE;
         }
